@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router";
 import { Minus, Plus, ShoppingBag, X } from "lucide-react";
 
-import { products } from "../data/shopData";
+import { useCart } from "../context/CartContext";
+import { formatCurrency } from "../data/shopData";
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -10,7 +11,7 @@ interface CartSidebarProps {
 
 export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
   const navigate = useNavigate();
-  const cartItems = products.slice(0, 2);
+  const { detailedItems, subtotal, totalItems, removeItem, updateQuantity } = useCart();
 
   if (!isOpen) return null;
 
@@ -22,6 +23,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
           <div className="flex items-center gap-3">
             <ShoppingBag size={20} />
             <h2 className="text-lg font-black uppercase">Shopping cart</h2>
+            <span className="rounded-full bg-[#61ff00] px-2 py-0.5 text-xs font-black">{totalItems}</span>
           </div>
           <button onClick={onClose} className="grid size-10 place-items-center rounded-full bg-[#f3f3f3] hover:bg-[#61ff00]" aria-label="Close cart">
             <X size={18} />
@@ -29,41 +31,90 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
         </div>
 
         <div className="flex-1 overflow-y-auto p-5">
-          <div className="space-y-4">
-            {cartItems.map(item => (
-              <div key={item.id} className="flex gap-4 rounded-[8px] border border-black/10 p-3">
-                <div className="size-24 shrink-0 rounded-[6px] bg-[#f6f6f6]">
-                  <img src={item.image} alt={item.name} className="h-full w-full object-contain p-2" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <Link to={`/product/${item.id}`} onClick={onClose} className="font-black leading-snug hover:text-[#0b8f24]">
-                    {item.name}
+          {detailedItems.length === 0 ? (
+            <div className="flex h-full min-h-[320px] flex-col items-center justify-center rounded-[8px] border border-dashed border-black/15 p-6 text-center">
+              <div className="grid size-16 place-items-center rounded-full bg-[#f6f6f6]">
+                <ShoppingBag size={24} />
+              </div>
+              <h3 className="mt-5 text-xl font-black uppercase">Your cart is empty</h3>
+              <p className="mt-2 max-w-xs text-sm leading-6 text-[#666]">
+                Add a pair from the shop and it will appear here instantly.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  navigate("/products");
+                }}
+                className="mt-5 rounded-[6px] bg-black px-6 py-3 text-sm font-black uppercase text-white hover:bg-[#61ff00] hover:text-black"
+              >
+                Shop products
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {detailedItems.map(item => (
+                <div key={item.id} className="flex gap-4 rounded-[8px] border border-black/10 p-3">
+                  <Link to={`/product/${item.product.id}`} onClick={onClose} className="size-24 shrink-0 rounded-[6px] bg-[#f6f6f6]">
+                    <img src={item.product.image} alt={item.product.name} className="h-full w-full object-contain p-2" />
                   </Link>
-                  <p className="mt-1 text-sm text-[#666]">{item.price}</p>
-                  <div className="mt-3 flex w-28 items-center justify-between rounded-full border border-black/10 px-3 py-1">
-                    <Minus size={14} />
-                    <span className="text-sm font-black">1</span>
-                    <Plus size={14} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <Link to={`/product/${item.product.id}`} onClick={onClose} className="font-black leading-snug hover:text-[#0b8f24]">
+                        {item.product.name}
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => removeItem(item.id)}
+                        className="grid size-8 shrink-0 place-items-center rounded-full text-[#777] hover:bg-[#f6f6f6] hover:text-black"
+                        aria-label={`Remove ${item.product.name}`}
+                      >
+                        <X size={15} />
+                      </button>
+                    </div>
+                    <p className="mt-1 text-sm text-[#666]">
+                      Size {item.size} / Color {item.color}
+                    </p>
+                    <p className="mt-1 text-sm font-black">{formatCurrency(item.lineTotal)}</p>
+                    <div className="mt-3 flex w-28 items-center justify-between rounded-full border border-black/10 px-2 py-1">
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        className="grid size-7 place-items-center"
+                        aria-label={`Decrease ${item.product.name} quantity`}
+                      >
+                        <Minus size={14} />
+                      </button>
+                      <span className="text-sm font-black">{item.quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        className="grid size-7 place-items-center"
+                        aria-label={`Increase ${item.product.name} quantity`}
+                      >
+                        <Plus size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="border-t border-black/10 p-5">
           <div className="mb-4 flex items-center justify-between text-lg font-black">
             <span>Subtotal</span>
-            <span>VND 6,440,000</span>
+            <span>{formatCurrency(subtotal)}</span>
           </div>
           <button
             onClick={() => {
               onClose();
-              navigate("/checkout");
+              navigate(detailedItems.length === 0 ? "/products" : "/checkout");
             }}
             className="mb-3 flex h-14 w-full items-center justify-center rounded-[6px] bg-black text-sm font-black uppercase text-white hover:bg-[#61ff00] hover:text-black"
           >
-            Checkout
+            {detailedItems.length === 0 ? "Shop now" : "Checkout"}
           </button>
           <button
             onClick={() => {

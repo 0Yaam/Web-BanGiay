@@ -1,7 +1,44 @@
+import { FormEvent, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 
+type ContactForm = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  topic: string;
+  message: string;
+};
+
+const initialContactForm: ContactForm = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  topic: "Product question",
+  message: "",
+};
+
 export default function ContactPage() {
+  const [form, setForm] = useState(initialContactForm);
+  const [status, setStatus] = useState("");
+
+  const updateField = (field: keyof ContactForm, value: string) => {
+    setForm(currentForm => ({ ...currentForm, [field]: value }));
+    setStatus("");
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!form.firstName || !form.email || !form.message) {
+      setStatus("Please add your name, email, and message before sending.");
+      return;
+    }
+
+    setStatus("Message sent. Our support team will reply shortly.");
+    setForm(initialContactForm);
+  };
+
   return (
     <div className="bg-white text-[#111]">
       <section className="border-y border-black/10 bg-[#f6f6f6]">
@@ -39,7 +76,7 @@ export default function ContactPage() {
           })}
         </div>
 
-        <form className="rounded-[8px] border border-black/10 p-5 sm:p-7">
+        <form className="rounded-[8px] border border-black/10 p-5 sm:p-7" onSubmit={handleSubmit}>
           <div className="mb-6 flex items-center gap-3">
             <MessageCircle className="text-[#0b8f24]" />
             <h2 className="font-['Oswald',sans-serif] text-3xl font-black uppercase">Send a message</h2>
@@ -47,19 +84,36 @@ export default function ContactPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="text-sm font-black uppercase">
               First name
-              <input className="mt-2 h-12 w-full rounded-[6px] border border-black/10 px-4 text-base font-normal outline-none focus:border-black" />
+              <input
+                value={form.firstName}
+                onChange={event => updateField("firstName", event.target.value)}
+                className="mt-2 h-12 w-full rounded-[6px] border border-black/10 px-4 text-base font-normal outline-none focus:border-black"
+              />
             </label>
             <label className="text-sm font-black uppercase">
               Last name
-              <input className="mt-2 h-12 w-full rounded-[6px] border border-black/10 px-4 text-base font-normal outline-none focus:border-black" />
+              <input
+                value={form.lastName}
+                onChange={event => updateField("lastName", event.target.value)}
+                className="mt-2 h-12 w-full rounded-[6px] border border-black/10 px-4 text-base font-normal outline-none focus:border-black"
+              />
             </label>
             <label className="text-sm font-black uppercase">
               Email
-              <input type="email" className="mt-2 h-12 w-full rounded-[6px] border border-black/10 px-4 text-base font-normal outline-none focus:border-black" />
+              <input
+                type="email"
+                value={form.email}
+                onChange={event => updateField("email", event.target.value)}
+                className="mt-2 h-12 w-full rounded-[6px] border border-black/10 px-4 text-base font-normal outline-none focus:border-black"
+              />
             </label>
             <label className="text-sm font-black uppercase">
               Topic
-              <select className="mt-2 h-12 w-full rounded-[6px] border border-black/10 px-4 text-base font-normal outline-none focus:border-black">
+              <select
+                value={form.topic}
+                onChange={event => updateField("topic", event.target.value)}
+                className="mt-2 h-12 w-full rounded-[6px] border border-black/10 px-4 text-base font-normal outline-none focus:border-black"
+              >
                 <option>Product question</option>
                 <option>Order support</option>
                 <option>Exchange and return</option>
@@ -68,9 +122,18 @@ export default function ContactPage() {
           </div>
           <label className="mt-4 block text-sm font-black uppercase">
             Message
-            <textarea className="mt-2 min-h-36 w-full rounded-[6px] border border-black/10 px-4 py-3 text-base font-normal outline-none focus:border-black" />
+            <textarea
+              value={form.message}
+              onChange={event => updateField("message", event.target.value)}
+              className="mt-2 min-h-36 w-full rounded-[6px] border border-black/10 px-4 py-3 text-base font-normal outline-none focus:border-black"
+            />
           </label>
-          <button type="button" className="mt-5 inline-flex items-center gap-3 rounded-[6px] bg-black px-7 py-4 text-sm font-black uppercase text-white transition hover:bg-[#61ff00] hover:text-black">
+          {status && (
+            <p className="mt-4 rounded-[6px] bg-[#e8fff4] p-3 text-sm font-bold text-[#0b8f24]">
+              {status}
+            </p>
+          )}
+          <button type="submit" className="mt-5 inline-flex items-center gap-3 rounded-[6px] bg-black px-7 py-4 text-sm font-black uppercase text-white transition hover:bg-[#61ff00] hover:text-black">
             Send message
             <ArrowRight size={17} />
           </button>

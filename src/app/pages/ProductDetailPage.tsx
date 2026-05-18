@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { ArrowRight, Check, Heart, Minus, Plus, RotateCcw, ShieldCheck, ShoppingBag, Star, Truck } from "lucide-react";
 
@@ -9,10 +9,27 @@ export default function ProductDetailPage() {
   const { id } = useParams();
   const product = getProductById(id);
   const related = products.filter(item => item.id !== product.id).slice(0, 3);
-  const { toggleCart } = useCart();
+  const { addItem, openCart } = useCart();
   const [selectedImage, setSelectedImage] = useState(product.image);
   const [selectedSize, setSelectedSize] = useState(product.sizes[1] ?? product.sizes[0]);
+  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
   const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    setSelectedImage(product.image);
+    setSelectedSize(product.sizes[1] ?? product.sizes[0]);
+    setSelectedColor(product.colors[0]);
+    setQuantity(1);
+  }, [product]);
+
+  const handleAddToCart = () => {
+    addItem(product, {
+      size: selectedSize,
+      color: selectedColor,
+      quantity,
+    });
+    openCart();
+  };
 
   return (
     <div className="bg-white text-[#111]">
@@ -74,7 +91,11 @@ export default function ProductDetailPage() {
                 {product.colors.map(color => (
                   <button
                     key={color}
-                    className="size-9 rounded-full border-2 border-white ring-1 ring-black/15 transition hover:ring-black"
+                    type="button"
+                    onClick={() => setSelectedColor(color)}
+                    className={`size-9 rounded-full border-2 border-white ring-1 transition hover:ring-black ${
+                      selectedColor === color ? "ring-2 ring-black" : "ring-black/15"
+                    }`}
                     style={{ backgroundColor: color }}
                     aria-label={`Choose color ${color}`}
                   />
@@ -113,7 +134,9 @@ export default function ProductDetailPage() {
                 </button>
               </div>
               <button
-                onClick={toggleCart}
+                type="button"
+                onClick={handleAddToCart}
+                aria-label={`Add ${product.name} to cart`}
                 className="inline-flex h-14 flex-1 items-center justify-center gap-3 rounded-[6px] bg-black px-7 text-sm font-black uppercase text-white transition hover:bg-[#61ff00] hover:text-black"
               >
                 Add to cart

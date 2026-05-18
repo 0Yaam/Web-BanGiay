@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { useCart } from "../context/CartContext";
+import { products as catalogProducts } from "../data/shopData";
 
 import logoMate from "../../imports/TrangChủ/89309c4327d643be9d6885f84d12f69b214a62e7.png";
 import heroBackground from "../../imports/TrangChủ/f9b8c513c6f1279c9130e7d7020620f5c3b0ccf8.png";
@@ -186,7 +187,7 @@ function IconButton({
 }
 
 function HomeHeader() {
-  const { toggleCart } = useCart();
+  const { openCart, totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -219,10 +220,13 @@ function HomeHeader() {
           type="button"
           aria-label="Cart"
           title="Cart"
-          onClick={toggleCart}
+          onClick={openCart}
           className="fixed right-4 top-4 z-[9999] grid size-11 place-items-center rounded-full bg-black text-[#61ff00] shadow-sm sm:hidden"
         >
           <ShoppingBag size={18} />
+          <span className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-[#61ff00] text-[10px] font-black text-black">
+            {totalItems}
+          </span>
         </button>
 
         <div className="hidden items-center gap-2 sm:static sm:flex">
@@ -239,11 +243,11 @@ function HomeHeader() {
           >
             <User size={18} />
           </Link>
-          <IconButton label="Cart" onClick={toggleCart}>
+          <IconButton label="Cart" onClick={openCart}>
             <span className="relative">
               <ShoppingBag size={18} />
               <span className="absolute -right-2 -top-2 grid size-4 place-items-center rounded-full bg-black text-[10px] font-bold text-[#61ff00]">
-                2
+                {totalItems}
               </span>
             </span>
           </IconButton>
@@ -306,8 +310,19 @@ function HomeHeader() {
 }
 
 function ProductCard({ product }: { product: (typeof products)[number] }) {
-  const { toggleCart } = useCart();
+  const { addItem, openCart } = useCart();
   const [favorite, setFavorite] = useState(false);
+  const catalogProduct = catalogProducts.find(item => item.id === product.id);
+
+  const addFeaturedProduct = () => {
+    if (!catalogProduct) return;
+    addItem(catalogProduct, {
+      size: catalogProduct.sizes[0],
+      color: catalogProduct.colors[0],
+      quantity: 1,
+    });
+    openCart();
+  };
 
   return (
     <article className="group relative overflow-hidden rounded-[8px] border border-black/10 bg-white">
@@ -342,7 +357,7 @@ function ProductCard({ product }: { product: (typeof products)[number] }) {
         >
           <Search size={17} />
         </Link>
-        <IconButton label="Add to cart" onClick={toggleCart}>
+        <IconButton label="Add to cart" onClick={addFeaturedProduct}>
           <ShoppingBag size={17} />
         </IconButton>
       </div>
@@ -380,7 +395,7 @@ function ProductCard({ product }: { product: (typeof products)[number] }) {
 }
 
 export default function HomePage() {
-  const { toggleCart } = useCart();
+  const { openCart } = useCart();
   const marqueeBrands = useMemo(() => [...brands, ...brands], []);
 
   return (
@@ -414,7 +429,7 @@ export default function HomePage() {
               </Link>
               <button
                 type="button"
-                onClick={toggleCart}
+                onClick={openCart}
                 className="inline-flex items-center gap-3 rounded-[6px] border border-black/15 bg-white px-7 py-4 text-sm font-black uppercase text-black transition duration-300 hover:-translate-y-0.5 hover:border-black"
               >
                 Quick cart

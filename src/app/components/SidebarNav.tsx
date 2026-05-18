@@ -60,7 +60,7 @@ function ArrowUpIcon() {
 }
 
 export default function SidebarNav() {
-  const { toggleCart } = useCart();
+  const { openCart, totalItems } = useCart();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -76,14 +76,16 @@ export default function SidebarNav() {
           {/* Cart Button */}
           <div className="pb-[30px]">
             <button
-              onClick={toggleCart}
+              type="button"
+              onClick={openCart}
               className="relative flex items-center justify-center min-h-[46px] min-w-[46px] rounded-full cursor-pointer bg-transparent border-none"
+              aria-label="Cart"
             >
               <div className="flex items-center justify-center px-[13px] py-[5px]">
                 <CartIcon />
               </div>
               <div className="absolute bg-[#61ff00] right-[-3px] top-[-5px] rounded-full w-[18px] h-[18px] flex items-center justify-center">
-                <span className="text-[10px] font-bold text-black">0</span>
+                <span className="text-[10px] font-bold text-black">{totalItems}</span>
               </div>
             </button>
           </div>
@@ -126,6 +128,7 @@ export default function SidebarNav() {
 
       {/* Scroll to Top Button - Bottom right, near navbar */}
       <button
+        type="button"
         onClick={scrollToTop}
         className="fixed bottom-[30px] right-[120px] z-30 hidden h-[56px] w-[56px] cursor-pointer items-center justify-center rounded-full border-none bg-white lg:flex"
         style={{

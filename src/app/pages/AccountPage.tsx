@@ -1,7 +1,19 @@
+import { useState } from "react";
 import { Link } from "react-router";
 import { Heart, MapPin, PackageCheck, Settings, User } from "lucide-react";
 
+import { readLastOrder } from "../data/orders";
+
 export default function AccountPage() {
+  const [lastOrder] = useState(readLastOrder);
+  const orderDate = lastOrder
+    ? new Date(lastOrder.date).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "";
+
   return (
     <div className="bg-white text-[#111]">
       <section className="border-y border-black/10 bg-[#f6f6f6]">
@@ -41,7 +53,7 @@ export default function AccountPage() {
           </div>
           <div className="grid gap-5 sm:grid-cols-3">
             {[
-              ["02", "Active orders"],
+              [lastOrder ? "01" : "00", "Active orders"],
               ["06", "Saved products"],
               ["01", "Default address"],
             ].map(([value, label]) => (
@@ -53,24 +65,32 @@ export default function AccountPage() {
           </div>
           <div className="rounded-[8px] border border-black/10 p-6">
             <h2 className="text-xl font-black uppercase">Recent order</h2>
-            <div className="mt-5 grid gap-4 sm:grid-cols-4">
-              <div>
-                <p className="text-sm text-[#666]">Order</p>
-                <p className="font-black">#MS-2048</p>
+            {lastOrder ? (
+              <div className="mt-5 grid gap-4 sm:grid-cols-4">
+                <div>
+                  <p className="text-sm text-[#666]">Order</p>
+                  <p className="font-black">#{lastOrder.id}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-[#666]">Date</p>
+                  <p className="font-black">{orderDate}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-[#666]">Status</p>
+                  <p className="font-black text-[#0b8f24]">{lastOrder.status}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-[#666]">Total</p>
+                  <p className="font-black">{lastOrder.totalLabel}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-[#666]">Date</p>
-                <p className="font-black">May 18, 2026</p>
+            ) : (
+              <div className="mt-5 rounded-[8px] bg-[#f6f6f6] p-5">
+                <p className="font-bold leading-7 text-[#555]">
+                  No orders yet. Your newest demo order will appear here after checkout.
+                </p>
               </div>
-              <div>
-                <p className="text-sm text-[#666]">Status</p>
-                <p className="font-black text-[#0b8f24]">Processing</p>
-              </div>
-              <div>
-                <p className="text-sm text-[#666]">Total</p>
-                <p className="font-black">VND 6,440,000</p>
-              </div>
-            </div>
+            )}
           </div>
           <Link to="/products" className="inline-flex w-fit rounded-[6px] bg-black px-7 py-4 text-sm font-black uppercase text-white hover:bg-[#61ff00] hover:text-black">
             Shop new arrivals

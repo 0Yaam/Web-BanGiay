@@ -11,7 +11,7 @@ const navItems = [
 ];
 
 export default function Navigation() {
-  const { toggleCart } = useCart();
+  const { openCart, totalItems } = useCart();
   const location = useLocation();
 
   return (
@@ -44,13 +44,13 @@ export default function Navigation() {
             </Link>
             <button
               type="button"
-              onClick={toggleCart}
+              onClick={openCart}
               className="relative flex items-center justify-center size-11 rounded-full bg-[#f1f1f1] text-[#222] hover:bg-[#e7e7e7]"
               aria-label="Cart"
             >
               <ShoppingCart size={18} />
               <span className="absolute right-1 top-1 flex size-4 items-center justify-center rounded-full bg-black text-[10px] font-semibold text-white">
-                1
+                {totalItems}
               </span>
             </button>
           </div>

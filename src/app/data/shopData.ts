@@ -36,6 +36,14 @@ export type Product = {
   description: string;
 };
 
+export function parseCurrency(value: string) {
+  return Number(value.replace(/[^\d]/g, ""));
+}
+
+export function formatCurrency(value: number) {
+  return `VND ${value.toLocaleString("en-US")}`;
+}
+
 export const products: Product[] = [
   {
     id: 1,
@@ -161,3 +169,9 @@ export function getProductById(id: string | undefined) {
   const numericId = Number(id);
   return products.find(product => product.id === numericId) ?? products[0];
 }
+
+export const productCategories = Array.from(new Set(products.map(product => product.category))).sort();
+
+export const productSizes = Array.from(new Set(products.flatMap(product => product.sizes))).sort(
+  (first, second) => Number(first) - Number(second),
+);

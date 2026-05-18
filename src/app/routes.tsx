@@ -3,8 +3,6 @@ import LayoutWrapper from "./pages/LayoutWrapper";
 import HomePage from "./pages/HomePage";
 import ProductCategoryPage from "./pages/ProductCategoryPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
-import ProductDetailAltPage from "./pages/ProductDetailAltPage";
-import ProductDetailVariant2Page from "./pages/ProductDetailVariant2Page";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import CheckoutSuccessPage from "./pages/CheckoutSuccessPage";
@@ -33,11 +31,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/product-alt/:id",
-        element: <ProductDetailAltPage />,
+        element: <ProductDetailPage />,
       },
       {
         path: "/product-v2/:id",
-        element: <ProductDetailVariant2Page />,
+        element: <ProductDetailPage />,
       },
       {
         path: "/cart",
