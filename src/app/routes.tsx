@@ -1,10 +1,6 @@
 import { createBrowserRouter } from "react-router";
 
 import FigmaPageShell from "./components/FigmaPageShell";
-import Layout from "./components/Layout";
-import BlogPage from "./pages/BlogPage";
-import ProductCategoryPage from "./pages/ProductCategoryPage";
-import ProductDetailPage from "./pages/ProductDetailPage";
 import DangKi from "../imports/DangKi/DangKi";
 import DangNhap from "../imports/DangNhập/DangNhập";
 import ThanhToanThanhCong from "../imports/ThanhToanThanhCong/ThanhToanThanhCong";
@@ -28,10 +24,6 @@ function figmaPage(page: string, element: JSX.Element, designWidth?: number) {
   );
 }
 
-function appPage(element: JSX.Element) {
-  return <Layout>{element}</Layout>;
-}
-
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -39,15 +31,15 @@ export const router = createBrowserRouter([
   },
   {
     path: "/products",
-    element: appPage(<ProductCategoryPage />),
+    element: figmaPage("products", <TrangDanhMucSanPham />),
   },
   {
     path: "/product/:id",
-    element: appPage(<ProductDetailPage />),
+    element: figmaPage("product", <TrangSanPham />),
   },
   {
     path: "/blog",
-    element: appPage(<BlogPage />),
+    element: figmaPage("blog", <TrangThongTin />),
   },
   {
     path: "/product-alt/:id",

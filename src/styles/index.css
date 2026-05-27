@@ -58,23 +58,13 @@ body {
 	outline-offset: 4px;
 }
 
-.figma-page-shell [data-figma-action="option"],
-.figma-page-shell [data-figma-action="filter-toggle"],
-.figma-page-shell [data-figma-action="tab"] {
-	position: relative;
-}
-
 .figma-page-shell [data-figma-active="true"] {
 	box-shadow: inset 0 0 0 2px #0db22a !important;
 	filter: brightness(0.98);
 }
 
-.figma-page-shell [data-figma-action="filter-toggle"][data-figma-active="true"]::after {
-	position: absolute;
-	inset: 4px;
-	border-radius: 3px;
-	background: #60ff00;
-	content: "";
+.figma-page-shell [data-figma-action="filter-toggle"][data-figma-active="true"] {
+	background: #60ff00 !important;
 }
 
 .figma-native-input {

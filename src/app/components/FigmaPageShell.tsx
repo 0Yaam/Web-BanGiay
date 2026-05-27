@@ -40,6 +40,7 @@ type FigmaAction =
   | "compare"
   | "question"
   | "share"
+  | "gallery"
   | "option"
   | "filter-toggle"
   | "tab"
@@ -118,6 +119,31 @@ function isSizeLabel(text: string) {
   return /^(3[5-9]|4[0-9]|5[0-2])$/.test(text);
 }
 
+function getCategoryFilters(value: string) {
+  const category = normalizeText(value);
+  const map: Record<string, string[]> = {
+    BASKETBALL: ["BASKETBALL"],
+    COURT: ["BASKETBALL"],
+    DAILY: ["DAILY"],
+    FASHION: ["LIFESTYLE", "STREETWEAR", "DAILY"],
+    KID: ["DAILY"],
+    KIDS: ["DAILY"],
+    LIFESTYLE: ["LIFESTYLE", "STREETWEAR", "DAILY"],
+    MEN: ["BASKETBALL", "TRAINING", "STREETWEAR"],
+    OUTDOOR: ["OUTDOOR"],
+    RUNNING: ["TRAINING"],
+    "RUNNING SHOES": ["TRAINING"],
+    SKATE: ["DAILY", "STREETWEAR"],
+    SNEAKERS: ["LIFESTYLE", "STREETWEAR", "DAILY"],
+    SPORTS: ["BASKETBALL", "TRAINING"],
+    STREETWEAR: ["STREETWEAR"],
+    TRAINING: ["TRAINING"],
+    WOMEN: ["LIFESTYLE", "DAILY"],
+  };
+
+  return map[category] ?? (category ? [category] : []);
+}
+
 function nearestInteractiveElement(start: HTMLElement, root: HTMLElement) {
   let element: HTMLElement | null = start;
   let depth = 0;
@@ -130,6 +156,7 @@ function nearestInteractiveElement(start: HTMLElement, root: HTMLElement) {
       name.includes("Button") ||
       name.includes("logo") ||
       name.includes("Search") ||
+      name.includes("product-image") ||
       name.includes("Input - Product quantity") ||
       name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes("San pham")
     ) {
@@ -169,6 +196,7 @@ function markAction(element: HTMLElement, action: FigmaAction, productId?: numbe
       "contact-submit",
       "coupon",
       "filter-toggle",
+      "gallery",
       "load-more",
       "newsletter",
       "option",
@@ -257,7 +285,100 @@ function hydrateInteractiveTargets(root: HTMLElement) {
   productCards.forEach((card, index) => {
     const product = products[index % products.length] ?? products[0];
     markAction(card, "product", product.id);
+    card.dataset.figmaProductCard = "true";
+    card.dataset.figmaProductCategory = normalizeText(product.category);
+    card.dataset.figmaProductName = normalizeText(`${product.name} ${product.category} ${product.description}`);
+    card.dataset.figmaProductSizes = product.sizes.join("|");
   });
+}
+
+function hydrateGalleryTargets(root: HTMLElement) {
+  const thumbnails = Array.from(root.querySelectorAll<HTMLElement>('[data-name^="product-image"]')).filter(element =>
+    element.closest('[data-name="Margin"]'),
+  );
+
+  thumbnails.forEach(thumbnail => {
+    const image = thumbnail.querySelector<HTMLImageElement>("img");
+    if (!image?.src) return;
+    const target = thumbnail.closest<HTMLElement>('[data-name="Border"]') ?? thumbnail.parentElement ?? thumbnail;
+    markAction(target, "gallery");
+    target.dataset.figmaImageSrc = image.src;
+    target.dataset.figmaOptionGroup = "Product gallery";
+  });
+}
+
+function getDisplayedProductTotal(root: HTMLElement) {
+  const countElement = Array.from(root.querySelectorAll<HTMLElement>("p, span")).find(element =>
+    /Showing\s+\d+\s+of\s+\d+\s+(results|products)/i.test(element.textContent ?? ""),
+  );
+  const match = countElement?.textContent?.match(/of\s+(\d+)/i);
+  return match ? Number(match[1]) : products.length;
+}
+
+function updateFigmaProductCount(root: HTMLElement, visibleCount: number, totalCount: number) {
+  root.querySelectorAll<HTMLElement>("p, span").forEach(element => {
+    const text = (element.textContent ?? "").replace(/\s+/g, " ").trim();
+
+    if (/^Showing\s+\d+\s+of\s+\d+\s+(results|products)$/i.test(text)) {
+      element.textContent = text.replace(
+        /^Showing\s+\d+\s+of\s+\d+\s+(results|products)$/i,
+        `Showing ${visibleCount} of ${totalCount} $1`,
+      );
+      return;
+    }
+
+    const parentText = (element.parentElement?.textContent ?? "").replace(/\s+/g, " ").trim();
+    if (/^\d+$/.test(text) && /^Showing\s+\d+\s+of\s+\d+\s+products$/i.test(parentText)) {
+      element.textContent = String(visibleCount);
+    }
+  });
+}
+
+function applyFigmaProductFilters(root: HTMLElement, search: string) {
+  const cards = Array.from(root.querySelectorAll<HTMLElement>('[data-figma-product-card="true"]'));
+  if (cards.length === 0) return;
+
+  const searchParams = new URLSearchParams(search);
+  const query = normalizeText(searchParams.get("search") ?? "");
+  const categories = getCategoryFilters(searchParams.get("category") ?? "");
+  const activeSizes = Array.from(
+    root.querySelectorAll<HTMLElement>('[data-figma-active="true"][data-figma-option-group="Size"]'),
+  ).map(element => element.dataset.figmaOption ?? "");
+  const totalCount = getDisplayedProductTotal(root);
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const productName = card.dataset.figmaProductName ?? "";
+    const productCategory = card.dataset.figmaProductCategory ?? "";
+    const productSizes = (card.dataset.figmaProductSizes ?? "").split("|");
+    const matchesQuery = !query || productName.includes(query);
+    const matchesCategory = categories.length === 0 || categories.includes(productCategory);
+    const matchesSize = activeSizes.length === 0 || activeSizes.some(size => productSizes.includes(size));
+    const visible = matchesQuery && matchesCategory && matchesSize;
+
+    card.dataset.figmaFilteredOut = String(!visible);
+    card.style.display = visible ? "" : "none";
+    if (visible) visibleCount += 1;
+  });
+  updateFigmaProductCount(root, visibleCount, totalCount);
+}
+
+function selectGalleryImage(root: HTMLElement, source?: HTMLElement | null) {
+  const imageSrc = source?.dataset.figmaImageSrc;
+  if (!imageSrc) return false;
+
+  const images = Array.from(root.querySelectorAll<HTMLImageElement>('[data-name^="product-image"] img'));
+  const mainImage = images
+    .map(image => ({ image, rect: image.getBoundingClientRect() }))
+    .sort((first, second) => second.rect.width * second.rect.height - first.rect.width * first.rect.height)[0]?.image;
+
+  if (!mainImage) return false;
+  mainImage.src = imageSrc;
+  root.querySelectorAll<HTMLElement>('[data-figma-option-group="Product gallery"]').forEach(element => {
+    element.dataset.figmaActive = "false";
+  });
+  if (source) source.dataset.figmaActive = "true";
+  return true;
 }
 
 function hydrateToggleTargets(root: HTMLElement) {
@@ -432,6 +553,7 @@ export default function FigmaPageShell({ children, designWidth = 1421, page }: F
     if (!root) return;
 
     hydrateInteractiveTargets(root);
+    hydrateGalleryTargets(root);
     hydrateToggleTargets(root);
     hideExportedScrollTopButtons(root);
     hydrateNativeInputs(root, search => {
@@ -439,7 +561,10 @@ export default function FigmaPageShell({ children, designWidth = 1421, page }: F
       navigate(`/products?search=${encodeURIComponent(search)}`);
     });
     updateCartBadge(root, totalItems);
-  }, [location.pathname, totalItems, navigate]);
+    if (page === "products") {
+      applyFigmaProductFilters(root, location.search);
+    }
+  }, [location.pathname, location.search, page, totalItems, navigate]);
 
   const activateSource = (source: HTMLElement | null | undefined, exclusive = true) => {
     if (!source) return;
@@ -513,14 +638,29 @@ export default function FigmaPageShell({ children, designWidth = 1421, page }: F
       return;
     }
 
+    if (action === "gallery") {
+      if (selectGalleryImage(rootRef.current ?? source?.ownerDocument.body ?? document.body, source)) {
+        setNotice("Image selected");
+      }
+      return;
+    }
+
     if (action === "option") {
       activateSource(source);
-      setNotice(`${source?.dataset.figmaOptionGroup ?? "Option"} ${option} selected`);
+      if (page === "products" && rootRef.current) {
+        applyFigmaProductFilters(rootRef.current, location.search);
+        setNotice(`Filtered by size ${option}`);
+      } else {
+        setNotice(`${source?.dataset.figmaOptionGroup ?? "Option"} ${option} selected`);
+      }
       return;
     }
 
     if (action === "filter-toggle") {
       activateSource(source, false);
+      if (page === "products" && rootRef.current) {
+        applyFigmaProductFilters(rootRef.current, location.search);
+      }
       setNotice("Filter updated");
       return;
     }
