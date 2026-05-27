@@ -152,6 +152,14 @@ function hydrateInteractiveTargets(root: HTMLElement) {
   });
 }
 
+function hideExportedScrollTopButtons(root: HTMLElement) {
+  root.querySelectorAll<HTMLElement>('[data-name="Background"].sticky.top-0').forEach(button => {
+    const wrapper = button.parentElement;
+    if (!wrapper?.className.includes("pointer-events-none")) return;
+    wrapper.dataset.figmaExportedScrollTop = "true";
+  });
+}
+
 function isInputLike(element: HTMLElement) {
   const text = getElementText(element);
   const rect = element.getBoundingClientRect();
@@ -239,6 +247,7 @@ export default function FigmaPageShell({ children, designWidth = 1421, page }: F
   const stageRef = useRef<HTMLDivElement>(null);
   const [stageHeight, setStageHeight] = useState<number | undefined>();
   const [notice, setNotice] = useState("");
+  const [scrollTopVisible, setScrollTopVisible] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
@@ -255,14 +264,22 @@ export default function FigmaPageShell({ children, designWidth = 1421, page }: F
     return () => window.clearTimeout(timer);
   }, [notice]);
 
+  useEffect(() => {
+    const updateVisibility = () => setScrollTopVisible(window.scrollY > 500);
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+
+    return () => window.removeEventListener("scroll", updateVisibility);
+  }, []);
+
   useLayoutEffect(() => {
     const root = rootRef.current;
     const stage = stageRef.current;
     if (!root || !stage) return;
 
     const updateScale = () => {
-      const shouldScale = window.innerWidth < 900;
-      const scale = shouldScale ? Math.min(1, root.clientWidth / designWidth) : 1;
+      const shouldScale = window.innerWidth < 900 || page === "home";
+      const scale = shouldScale ? root.clientWidth / designWidth : 1;
       root.style.setProperty("--figma-scale", String(scale));
       root.style.setProperty("--figma-design-width", `${designWidth}px`);
       setStageHeight(shouldScale ? Math.ceil(stage.scrollHeight * scale) : undefined);
@@ -279,13 +296,14 @@ export default function FigmaPageShell({ children, designWidth = 1421, page }: F
       resizeObserver.disconnect();
       window.removeEventListener("resize", updateScale);
     };
-  }, [designWidth]);
+  }, [designWidth, page]);
 
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
     hydrateInteractiveTargets(root);
+    hideExportedScrollTopButtons(root);
     hydrateNativeInputs(root, search => {
       setQuery(search);
       navigate(`/products?search=${encodeURIComponent(search)}`);
@@ -359,6 +377,11 @@ export default function FigmaPageShell({ children, designWidth = 1421, page }: F
     navigate(query.trim() ? `/products?search=${encodeURIComponent(query.trim())}` : "/products");
   };
 
+  const scrollToTop = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div
       className="figma-page-shell"
@@ -389,6 +412,15 @@ export default function FigmaPageShell({ children, designWidth = 1421, page }: F
       ) : null}
 
       {notice ? <div className="figma-toast">{notice}</div> : null}
+
+      <button
+        aria-label="Back to top"
+        className={`figma-scroll-top${scrollTopVisible ? " is-visible" : ""}`}
+        onClick={scrollToTop}
+        type="button"
+      >
+        &uarr;
+      </button>
     </div>
   );
 }

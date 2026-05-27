@@ -132,6 +132,44 @@ textarea.figma-native-input {
 	box-shadow: 0 16px 45px rgba(0, 0, 0, 0.2);
 }
 
+.figma-page-shell [data-figma-exported-scroll-top="true"] {
+	display: none !important;
+}
+
+.figma-scroll-top {
+	position: fixed;
+	right: 24px;
+	bottom: 24px;
+	z-index: 55;
+	display: grid;
+	height: 46px;
+	width: 46px;
+	place-items: center;
+	border: 2px solid #0db22a;
+	border-radius: 999px;
+	background: #fff;
+	color: #222;
+	cursor: pointer;
+	font-family: Arial, sans-serif;
+	font-size: 20px;
+	line-height: 1;
+	opacity: 0;
+	pointer-events: none;
+	transform: translateY(12px);
+	transition: opacity 180ms ease, transform 180ms ease, border-color 180ms ease;
+}
+
+.figma-scroll-top:hover {
+	border-color: #60ff00;
+	transform: translateY(0) scale(1.04);
+}
+
+.figma-scroll-top.is-visible {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translateY(0);
+}
+
 .non-home-page [data-name="Header"] {
 	display: none;
 }
