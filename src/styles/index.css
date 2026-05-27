@@ -14,6 +14,124 @@ body {
 	align-content: stretch;
 }
 
+.figma-page-shell {
+	--figma-scale: 1;
+	--figma-design-width: 1421px;
+	position: relative;
+	width: 100%;
+	overflow-x: clip;
+	background: #fff;
+}
+
+.figma-stage {
+	position: relative;
+	width: 100%;
+	transform: scale(var(--figma-scale));
+	transform-origin: top left;
+}
+
+.figma-page-shell [data-figma-action] {
+	cursor: pointer;
+	transition: filter 180ms ease, opacity 180ms ease, transform 180ms ease;
+}
+
+.figma-page-shell [data-figma-action]:hover {
+	filter: brightness(0.96);
+}
+
+.figma-page-shell [data-figma-action]:focus-visible {
+	outline: 2px solid #60ff00;
+	outline-offset: 4px;
+}
+
+.figma-native-input {
+	position: absolute;
+	inset: 0;
+	z-index: 5;
+	height: 100%;
+	width: 100%;
+	border: 0;
+	border-radius: inherit;
+	background: transparent;
+	color: #222;
+	font: inherit;
+	outline: none;
+	padding: 0 18px;
+}
+
+textarea.figma-native-input {
+	min-height: 100%;
+	padding-top: 16px;
+	resize: vertical;
+}
+
+.figma-native-input::placeholder {
+	color: transparent;
+}
+
+.figma-search-overlay {
+	position: fixed;
+	top: 24px;
+	right: 24px;
+	z-index: 50;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: min(420px, calc(100vw - 32px));
+	padding: 10px;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	border-radius: 999px;
+	background: #fff;
+	box-shadow: 0 16px 45px rgba(0, 0, 0, 0.16);
+}
+
+.figma-search-overlay input {
+	min-width: 0;
+	flex: 1;
+	border: 0;
+	background: transparent;
+	padding: 10px 14px;
+	outline: none;
+}
+
+.figma-search-overlay button {
+	height: 38px;
+	border: 0;
+	border-radius: 999px;
+	background: #111;
+	color: #fff;
+	cursor: pointer;
+	font-size: 12px;
+	font-weight: 800;
+	padding: 0 16px;
+	text-transform: uppercase;
+}
+
+.figma-search-overlay button:last-child {
+	width: 38px;
+	background: #f2f2f2;
+	color: #111;
+	font-size: 20px;
+	padding: 0;
+}
+
+.figma-toast {
+	position: fixed;
+	right: 24px;
+	bottom: 24px;
+	z-index: 60;
+	border-radius: 999px;
+	background: #111;
+	color: #60ff00;
+	font-family: "Oswald", Arial, sans-serif;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0;
+	padding: 14px 20px;
+	text-transform: uppercase;
+	box-shadow: 0 16px 45px rgba(0, 0, 0, 0.2);
+}
+
 .non-home-page [data-name="Header"] {
 	display: none;
 }
@@ -65,5 +183,29 @@ body {
 
 	.mate-hero {
 		min-height: auto;
+	}
+}
+
+@media (max-width: 899px) {
+	.figma-page-shell {
+		overflow: hidden;
+	}
+
+	.figma-stage {
+		width: var(--figma-design-width);
+	}
+
+	.figma-search-overlay {
+		left: 16px;
+		right: 16px;
+		top: 16px;
+		width: auto;
+	}
+
+	.figma-toast {
+		left: 16px;
+		right: 16px;
+		bottom: 16px;
+		text-align: center;
 	}
 }

@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router";
 
+import FigmaPageShell from "./components/FigmaPageShell";
 import DangKi from "../imports/DangKi/DangKi";
 import DangNhap from "../imports/DangNhập/DangNhập";
 import ThanhToanThanhCong from "../imports/ThanhToanThanhCong/ThanhToanThanhCong";
@@ -15,73 +16,81 @@ import TrangThanhToan from "../imports/TrangThanhToan/TrangThanhToan";
 import TrangThongTin from "../imports/TrangThongTin/TrangThongTin";
 import TrangThongTinTaiKhoan from "../imports/TrangThongTinTaiKhoản/TrangThongTinTaiKhoản";
 
+function figmaPage(page: string, element: JSX.Element, designWidth?: number) {
+  return (
+    <FigmaPageShell designWidth={designWidth} page={page}>
+      {element}
+    </FigmaPageShell>
+  );
+}
+
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <TrangChu />,
+    element: figmaPage("home", <TrangChu />),
   },
   {
     path: "/products",
-    element: <TrangDanhMucSanPham />,
+    element: figmaPage("products", <TrangDanhMucSanPham />),
   },
   {
     path: "/product/:id",
-    element: <TrangSanPham />,
+    element: figmaPage("product", <TrangSanPham />),
   },
   {
     path: "/product-alt/:id",
-    element: <TrangSanPhamAlt />,
+    element: figmaPage("product-alt", <TrangSanPhamAlt />),
   },
   {
     path: "/product-v2/:id",
-    element: <TrangSanPhamVariant />,
+    element: figmaPage("product-v2", <TrangSanPhamVariant />),
   },
   {
     path: "/cart",
-    element: <TrangGioHang />,
+    element: figmaPage("cart", <TrangGioHang />),
   },
   {
     path: "/checkout",
-    element: <TrangThanhToan />,
+    element: figmaPage("checkout", <TrangThanhToan />),
   },
   {
     path: "/checkout/success",
-    element: <ThanhToanThanhCong />,
+    element: figmaPage("checkout-success", <ThanhToanThanhCong />),
   },
   {
     path: "/info",
-    element: <TrangThongTin />,
+    element: figmaPage("info", <TrangThongTin />),
   },
   {
     path: "/about-us",
-    element: <TrangThongTin />,
+    element: figmaPage("about-us", <TrangThongTin />),
   },
   {
     path: "/about",
-    element: <TrangThongTin />,
+    element: figmaPage("about", <TrangThongTin />),
   },
   {
     path: "/aboutus",
-    element: <TrangThongTin />,
+    element: figmaPage("aboutus", <TrangThongTin />),
   },
   {
     path: "/contact",
-    element: <TrangLienHe />,
+    element: figmaPage("contact", <TrangLienHe />),
   },
   {
     path: "/account",
-    element: <TrangThongTinTaiKhoan />,
+    element: figmaPage("account", <TrangThongTinTaiKhoan />),
   },
   {
     path: "/login",
-    element: <DangNhap />,
+    element: figmaPage("login", <DangNhap />, 420),
   },
   {
     path: "/register",
-    element: <DangKi />,
+    element: figmaPage("register", <DangKi />, 420),
   },
   {
     path: "*",
-    element: <Trang404 />,
+    element: figmaPage("404", <Trang404 />),
   },
 ]);
