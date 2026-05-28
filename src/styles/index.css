@@ -23,6 +23,11 @@ body {
 	background: #fff;
 }
 
+.figma-page-shell:not([data-figma-page="home"]):not([data-figma-page="login"]):not([data-figma-page="register"]) {
+	max-width: 1120px;
+	margin-inline: auto;
+}
+
 .figma-stage {
 	position: relative;
 	width: var(--figma-design-width);
@@ -67,12 +72,63 @@ body {
 	background: #60ff00 !important;
 }
 
+.figma-right-rail {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 30;
+	display: flex;
+	width: 100px;
+	min-height: 674px;
+	flex-direction: column;
+	align-items: center;
+	gap: 34px;
+	padding-top: 34px;
+	border-left: 1px solid #e4e4e4;
+	background: #fff;
+}
+
+.figma-right-rail button {
+	position: relative;
+	display: grid;
+	width: 46px;
+	height: 46px;
+	place-items: center;
+	border: 0;
+	border-radius: 999px;
+	background: transparent;
+	color: #000;
+	cursor: pointer;
+}
+
+.figma-right-rail button:hover {
+	background: #f4f4f4;
+}
+
+.figma-right-rail span {
+	position: absolute;
+	top: -2px;
+	right: -2px;
+	display: grid;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 4px;
+	place-items: center;
+	border-radius: 999px;
+	background: #60ff00;
+	color: #000;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1;
+}
+
 .figma-native-input {
 	position: absolute;
 	inset: 0;
 	z-index: 5;
 	height: 100%;
 	width: 100%;
+	pointer-events: auto;
 	border: 0;
 	border-radius: inherit;
 	background: transparent;
@@ -90,6 +146,56 @@ textarea.figma-native-input {
 
 .figma-native-input::placeholder {
 	color: transparent;
+}
+
+.shop-price-range {
+	position: relative;
+	min-height: 34px;
+}
+
+.shop-price-range input[type="range"] {
+	position: absolute;
+	left: 0;
+	top: 8px;
+	width: 100%;
+	margin: 0;
+	pointer-events: none;
+	accent-color: #111;
+	background: transparent;
+}
+
+.shop-price-range input[type="range"]::-webkit-slider-thumb {
+	pointer-events: auto;
+	cursor: grab;
+}
+
+.shop-price-range input[type="range"]::-moz-range-thumb {
+	pointer-events: auto;
+	cursor: grab;
+}
+
+.shop-price-range::before {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 15px;
+	height: 4px;
+	border-radius: 999px;
+	background: #d9d9d9;
+	content: "";
+}
+
+.figma-cart-empty-message {
+	display: flex;
+	width: 100%;
+	min-height: 96px;
+	align-items: center;
+	justify-content: center;
+	border-bottom: 1px solid #f2f2f2;
+	color: #505157;
+	font-family: "Jost", Arial, sans-serif;
+	font-size: 14px;
+	font-weight: 600;
 }
 
 .figma-search-overlay {
@@ -314,6 +420,10 @@ textarea.figma-native-input {
 }
 
 @media (max-width: 1023px) {
+	.figma-right-rail {
+		display: none;
+	}
+
 	.home-shell {
 		margin-right: 0;
 	}
