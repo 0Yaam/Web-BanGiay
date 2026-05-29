@@ -8,7 +8,7 @@ const navItems = [
   { label: "Shop", to: "/products", match: "/products" },
   { label: "Product", to: "/product/1", match: "/product" },
   { label: "Blog", to: "/blog", match: "/blog" },
-  { label: "About", to: "/about-us", match: "/about-us" },
+  { label: "About", to: "/about-us", match: ["/about-us", "/about", "/aboutus"] },
   { label: "Contact", to: "/contact", match: "/contact" },
 ];
 
@@ -27,7 +27,7 @@ export default function Navigation() {
 
   return (
     <header className="bg-white">
-      <div className="mx-auto max-w-[1060px] px-6 sm:px-8">
+      <div className="mx-auto max-w-[1140px] px-6 sm:px-8">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center py-6">
           <div />
 
@@ -71,12 +71,13 @@ export default function Navigation() {
       </div>
 
       <div className="overflow-x-auto">
-        <div className="mx-auto max-w-[1060px] px-6 sm:px-8">
+        <div className="mx-auto max-w-[1140px] px-6 sm:px-8">
           <nav className="flex min-w-max items-center justify-start gap-7 py-3 text-[12px] font-semibold uppercase tracking-[0.2em] text-[#777] sm:justify-center sm:gap-10">
             {navItems.map(item => {
-              const isActive = item.match === "/"
+              const matches = Array.isArray(item.match) ? item.match : [item.match];
+              const isActive = matches.includes("/")
                 ? location.pathname === "/"
-                : location.pathname.startsWith(item.match);
+                : matches.some(match => location.pathname.startsWith(match));
 
               return (
                 <Link

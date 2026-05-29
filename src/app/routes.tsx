@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/blog",
-    element: figmaPage("blog", <TrangThongTin />),
+    element: figmaPage("blog", <TrangThongTin />, 1521),
   },
   {
     path: "/product-alt/:id",
@@ -68,7 +68,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/info",
-    element: figmaPage("info", <TrangThongTin />),
+    element: figmaPage("info", <TrangThongTin />, 1521),
   },
   {
     path: "/about-us",
@@ -84,7 +84,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/contact",
-    element: figmaPage("contact", <TrangLienHe />),
+    element: figmaPage("contact", <TrangLienHe />, 1521),
   },
   {
     path: "/account",

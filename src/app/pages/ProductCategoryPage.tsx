@@ -151,7 +151,7 @@ export default function ProductCategoryPage() {
   return (
     <div className="bg-white text-[#111]">
       <section className="border-y border-black/10 bg-[#f6f6f6]">
-        <div className="mx-auto max-w-[1060px] px-6 py-16 sm:px-8">
+        <div className="mx-auto max-w-[1140px] px-6 py-16 sm:px-8">
           <p className="text-sm font-black uppercase text-[#0b8f24]">Home / Shop</p>
           <div className="mt-4 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
             <div>
@@ -180,7 +180,7 @@ export default function ProductCategoryPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1060px] px-6 py-10 sm:px-8">
+      <section className="mx-auto max-w-[1140px] px-6 py-10 sm:px-8">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {categories.map(category => {
             const linkedCategories = collectionCategoryMap[category.title] ?? [category.title];
@@ -222,7 +222,7 @@ export default function ProductCategoryPage() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-[1060px] gap-8 px-6 pb-16 sm:px-8 lg:grid-cols-[270px_1fr]">
+      <section className="mx-auto grid max-w-[1140px] gap-8 px-6 pb-16 sm:px-8 lg:grid-cols-[270px_1fr]">
         <aside className="h-fit self-start rounded-[8px] border border-black/10 bg-white p-5">
           <div className="mb-6 flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-sm font-black uppercase">

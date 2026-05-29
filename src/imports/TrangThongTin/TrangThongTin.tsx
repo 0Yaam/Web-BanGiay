@@ -793,8 +793,8 @@ function Container63() {
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#505157] text-[14px] text-center whitespace-nowrap">
-        <p className="leading-[24px] mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam consequat</p>
-        <p className="leading-[24px]">ut ex vel finibus. Nunc eget molestie purus.</p>
+        <p className="leading-[24px] mb-0">Select a store look that matches your footwear brand.</p>
+        <p className="leading-[24px]">Keep layouts clean, premium, and easy to scan.</p>
       </div>
     </div>
   );
@@ -873,8 +873,8 @@ function Container68() {
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#505157] text-[14px] text-center whitespace-nowrap">
-        <p className="leading-[24px] mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam consequat</p>
-        <p className="leading-[24px]">ut ex vel finibus. Nunc eget molestie purus.</p>
+        <p className="leading-[24px] mb-0">Upload shoe photos, prices, colors, sizes, and stock.</p>
+        <p className="leading-[24px]">Everything stays organized for a real shop flow.</p>
       </div>
     </div>
   );
@@ -960,8 +960,8 @@ function Container73() {
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0 w-full" data-name="Container">
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#505157] text-[14px] text-center whitespace-nowrap">
-        <p className="leading-[24px] mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam consequat</p>
-        <p className="leading-[24px]">ut ex vel finibus. Nunc eget molestie purus.</p>
+        <p className="leading-[24px] mb-0">Launch product pages with cart, checkout, and account.</p>
+        <p className="leading-[24px]">Customers can browse, filter, and buy with less friction.</p>
       </div>
     </div>
   );

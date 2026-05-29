@@ -4,10 +4,16 @@
 
 html {
 	scroll-behavior: smooth;
+	overflow-x: hidden;
 }
 
 body {
 	font-family: "Jost", Arial, sans-serif;
+	overflow-x: hidden;
+}
+
+#root {
+	overflow-x: hidden;
 }
 
 .content-stretch {
@@ -19,13 +25,14 @@ body {
 	--figma-design-width: 1421px;
 	position: relative;
 	width: 100%;
-	overflow-x: clip;
+	overflow-x: hidden;
 	background: #fff;
 }
 
 .figma-page-shell:not([data-figma-page="home"]):not([data-figma-page="login"]):not([data-figma-page="register"]) {
-	max-width: 1120px;
-	margin-inline: auto;
+	max-width: none;
+	margin-inline: 0;
+	animation: mate-page-fade 420ms ease both;
 }
 
 .figma-stage {
@@ -52,6 +59,43 @@ body {
 .figma-page-shell [data-figma-action] {
 	cursor: pointer;
 	transition: filter 180ms ease, opacity 180ms ease, transform 180ms ease;
+}
+
+.figma-page-shell [data-name="banner"] img,
+.figma-page-shell [data-name^="about-store"] img,
+.figma-page-shell [data-name^="about-us-video"] img,
+.figma-page-shell [data-name^="product-image"] img {
+	transition: transform 420ms ease, filter 240ms ease;
+}
+
+.figma-page-shell [data-name="banner"]:hover img,
+.figma-page-shell [data-name^="about-store"]:hover img,
+.figma-page-shell [data-name^="about-us-video"]:hover img,
+.figma-page-shell [data-name^="product-image"]:hover img {
+	filter: saturate(1.04);
+	transform: scale(1.035);
+}
+
+@keyframes mate-page-fade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.figma-page-shell:not([data-figma-page="home"]):not([data-figma-page="login"]):not([data-figma-page="register"]) {
+		animation: none;
+	}
+
+	.figma-page-shell [data-name="banner"] img,
+	.figma-page-shell [data-name^="about-store"] img,
+	.figma-page-shell [data-name^="about-us-video"] img,
+	.figma-page-shell [data-name^="product-image"] img {
+		transition: none;
+	}
 }
 
 .figma-page-shell [data-figma-action]:hover {
@@ -381,7 +425,7 @@ textarea.figma-native-input {
 
 .home-shell {
 	margin-right: 100px;
-	overflow-x: clip;
+	overflow-x: hidden;
 }
 
 .mate-hero {

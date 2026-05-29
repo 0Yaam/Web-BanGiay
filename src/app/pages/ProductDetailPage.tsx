@@ -44,7 +44,7 @@ export default function ProductDetailPage() {
 
   return (
     <div className="bg-white text-[#111]">
-      <section className="mx-auto grid max-w-[1060px] min-w-0 gap-10 px-6 py-12 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
+      <section className="mx-auto grid max-w-[1140px] min-w-0 gap-10 px-6 py-12 sm:px-8 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="grid min-w-0 gap-4 sm:grid-cols-[96px_1fr]">
           <div className="order-2 flex min-w-0 gap-3 overflow-x-auto pb-1 sm:order-1 sm:flex-col sm:overflow-visible sm:pb-0">
             {galleryImages.map(image => (
@@ -192,7 +192,7 @@ export default function ProductDetailPage() {
       </section>
 
       <section className="border-y border-black/10 bg-[#f6f6f6] py-12">
-        <div className="mx-auto max-w-[1060px] px-6 sm:px-8">
+        <div className="mx-auto max-w-[1140px] px-6 sm:px-8">
           <div className="grid gap-6 lg:grid-cols-3">
             {[
               "Premium materials with breathable lining and padded support.",
@@ -208,7 +208,7 @@ export default function ProductDetailPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1060px] px-6 py-14 sm:px-8">
+      <section className="mx-auto max-w-[1140px] px-6 py-14 sm:px-8">
         <div className="mb-7 flex items-end justify-between gap-4">
           <div>
             <p className="text-sm font-black uppercase text-[#0b8f24]">You may also like</p>

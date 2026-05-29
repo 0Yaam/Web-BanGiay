@@ -5,6 +5,7 @@ import { type ReactNode } from "react";
 const helpLinks = ["Shipping", "Returns", "Size Guide", "Track Order"];
 const companyLinks = [
   { label: "About Us", to: "/about-us" },
+  { label: "Blog", to: "/blog" },
   { label: "Contact", to: "/contact" },
   { label: "Shop", to: "/products" },
   { label: "Account", to: "/account" },
@@ -18,7 +19,7 @@ const socialLinks = [
 export default function MateFooter() {
   return (
     <footer className="border-t border-black/10 bg-[#111] text-white">
-      <div className="mx-auto grid max-w-[1060px] gap-10 px-6 py-14 sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
+      <div className="mx-auto grid max-w-[1140px] gap-10 px-6 py-14 sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
         <div>
           <Link className="text-[30px] font-black tracking-[0.42em]" to="/">
             MATE
@@ -75,7 +76,7 @@ export default function MateFooter() {
         </div>
       </div>
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-[1060px] flex-col justify-between gap-3 px-6 py-5 text-xs font-bold uppercase tracking-[0.12em] text-white/45 sm:flex-row sm:px-8">
+        <div className="mx-auto flex max-w-[1140px] flex-col justify-between gap-3 px-6 py-5 text-xs font-bold uppercase tracking-[0.12em] text-white/45 sm:flex-row sm:px-8">
           <span>Copyright 2026 Mate Shoes</span>
           <span>Privacy Policy / Terms</span>
         </div>
