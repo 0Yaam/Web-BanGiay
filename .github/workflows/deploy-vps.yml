@@ -1,0 +1,112 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_PATH: ${{ secrets.VPS_DEPLOY_PATH || '/var/www/web-bangiay' }}
+      APP_PORT: ${{ secrets.VPS_APP_PORT || '47831' }}
+      SSH_PORT: ${{ secrets.VPS_PORT || '22' }}
+      SITE_NAME: web-bangiay
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Validate VPS secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${{ secrets.VPS_HOST }}" || (echo "Missing secret VPS_HOST" && exit 1)
+          test -n "${{ secrets.VPS_USER }}" || (echo "Missing secret VPS_USER" && exit 1)
+          test -n "${{ secrets.VPS_SSH_PRIVATE_KEY }}" || (echo "Missing secret VPS_SSH_PRIVATE_KEY" && exit 1)
+
+      - name: Prepare SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "$SSH_PORT" -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Prepare VPS directories
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            "sudo mkdir -p '$DEPLOY_PATH/current' && sudo chown -R '${{ secrets.VPS_USER }}':'${{ secrets.VPS_USER }}' '$DEPLOY_PATH'"
+
+      - name: Upload dist
+        shell: bash
+        run: |
+          set -euo pipefail
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -p $SSH_PORT" \
+            dist/ "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:$DEPLOY_PATH/current/"
+
+      - name: Configure nginx
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            "DEPLOY_PATH='$DEPLOY_PATH' APP_PORT='$APP_PORT' SITE_NAME='$SITE_NAME' bash -s" <<'REMOTE'
+          set -euo pipefail
+
+          if ! command -v nginx >/dev/null 2>&1; then
+            echo "nginx is not installed on the VPS. Install it first, then rerun this workflow."
+            exit 1
+          fi
+
+          sudo tee "/etc/nginx/sites-available/${SITE_NAME}" >/dev/null <<NGINX
+          server {
+              listen ${APP_PORT};
+              listen [::]:${APP_PORT};
+              server_name _;
+
+              root ${DEPLOY_PATH}/current;
+              index index.html;
+
+              location / {
+                  try_files \$uri \$uri/ /index.html;
+              }
+
+              location /assets/ {
+                  try_files \$uri =404;
+                  expires 30d;
+                  add_header Cache-Control "public, immutable";
+              }
+          }
+          NGINX
+
+          sudo ln -sfn "/etc/nginx/sites-available/${SITE_NAME}" "/etc/nginx/sites-enabled/${SITE_NAME}"
+          sudo nginx -t
+          sudo systemctl reload nginx
+          REMOTE
+
+      - name: Print deployment URL
+        run: |
+          echo "Deployed to: http://${{ secrets.VPS_HOST }}:${APP_PORT}"
