@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Link as RouterLink } from "react-router";
 import svgPaths from "./svg-7s85bhtfkc";
 import imgMasthead from "./7e50743c804ee3c01b7423cd7410540d607630a7.png";
 import imgKid from "./a9a3b8ccba9adf36fe61e5a6c9f3778decd5c484.png";
@@ -30,6 +32,257 @@ import imgImageContact1Png from "./c2000d94d8e5d7dd1fac8c081b9ad2c8a35297d1.png"
 import imgFigure from "./f6a7586ab049f7e8f087fb60cf77c048db40a1e4.png";
 import imgImageContact3Png from "./9090d63ed0f5181223c0085f89969a453671ce1d.png";
 import imgLogo from "./89309c4327d643be9d6885f84d12f69b214a62e7.png";
+import { formatPrice, products } from "../../app/data/products";
+
+type FilterState = {
+  selectedCategories: string[];
+  selectedBrands: string[];
+  selectedRatings: number[];
+  selectedColors: string[];
+  selectedSizes: string[];
+  minSelectedPrice: number;
+  maxSelectedPrice: number;
+};
+
+const categoryOptions = [
+  "Kid",
+  "Lifestyle",
+  "Men",
+  "Running Shoes",
+  "Skate",
+  "Sneakers",
+  "Sport Shoes",
+  "Women",
+];
+
+const colorOptions = [
+  { value: "blue", hex: "#0000ff" },
+  { value: "brown", hex: "#8b4513" },
+  { value: "lime", hex: "#7fff00" },
+  { value: "crimson", hex: "#dc143c" },
+  { value: "gray", hex: "#9e9e9e" },
+  { value: "gold", hex: "#ffd700" },
+  { value: "goldenrod", hex: "#daa520" },
+  { value: "green", hex: "#00ff00" },
+  { value: "indianred", hex: "#cd5c5c" },
+  { value: "azure", hex: "#f0ffff" },
+  { value: "lightgreen", hex: "#90ee90" },
+  { value: "lightskyblue", hex: "#87cefa" },
+  { value: "slateblue", hex: "#303a83" },
+  { value: "orange", hex: "#ffa500" },
+  { value: "palegreen", hex: "#98fb98" },
+  { value: "peru", hex: "#cd853f" },
+  { value: "pink", hex: "#ffc0cb" },
+  { value: "plum", hex: "#dda0dd" },
+  { value: "purple", hex: "#800080" },
+  { value: "red", hex: "#e70019" },
+  { value: "royalblue", hex: "#4169e1" },
+  { value: "yellowgreen", hex: "#9acd32" },
+  { value: "black", hex: "#111111" },
+  { value: "white", hex: "#ffffff" },
+  { value: "beige", hex: "#f5f5dc" },
+];
+
+function getPriceBounds() {
+  const priceValues = products.map((product) => product.price ?? 0);
+  return {
+    minPrice: Math.min(...priceValues),
+    maxPrice: Math.max(...priceValues),
+  };
+}
+
+function buildCountMap<T>(items: T[], getKey: (item: T) => string) {
+  return items.reduce<Record<string, number>>((acc, item) => {
+    const key = getKey(item);
+    acc[key] = (acc[key] ?? 0) + 1;
+    return acc;
+  }, {});
+}
+
+function toggleValue(values: string[], value: string) {
+  return values.includes(value)
+    ? values.filter((item) => item !== value)
+    : [...values, value];
+}
+
+function toggleNumber(values: number[], value: number) {
+  return values.includes(value)
+    ? values.filter((item) => item !== value)
+    : [...values, value];
+}
+
+function SidebarCheckbox({
+  label,
+  count,
+  checked,
+  onChange,
+}: {
+  label: string;
+  count: number;
+  checked: boolean;
+  onChange: () => void;
+}) {
+  return (
+    <label className="flex items-center gap-[12px] text-[#505157] text-[14px] cursor-pointer">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        className="size-[18px] rounded-[3px] border border-[#c8c8c8] accent-[#0db22a]"
+      />
+      <span className="leading-[24px]">{label}</span>
+      <span className="text-[#909090] text-[12px] leading-[16px]">({count})</span>
+    </label>
+  );
+}
+
+function StarIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path
+        d="M7 0.5L8.7 5.1H13.5L9.6 8.1L10.9 12.9L7 10L3.1 12.9L4.4 8.1L0.5 5.1H5.3L7 0.5Z"
+        fill={filled ? "#000" : "#c3c3c3"}
+      />
+    </svg>
+  );
+}
+
+function RatingRow({ rating }: { rating: number }) {
+  return (
+    <div className="flex gap-[2px]">
+      {[1, 2, 3, 4, 5].map((value) => (
+        <StarIcon key={value} filled={value <= rating} />
+      ))}
+    </div>
+  );
+}
+
+function ColorSwatch({
+  value,
+  hex,
+  checked,
+  onToggle,
+}: {
+  value: string;
+  hex: string;
+  checked: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`size-[30px] rounded-[9999px] p-[2px] border transition-colors ${
+        checked ? "border-[#0db22a]" : "border-transparent"
+      }`}
+      aria-pressed={checked}
+      aria-label={value}
+    >
+      <span
+        className="block size-full rounded-[9999px]"
+        style={{ backgroundColor: hex }}
+      />
+    </button>
+  );
+}
+
+function ProductCard({ product }: { product: (typeof products)[number] }) {
+  const price = formatPrice(product.price);
+  const oldPrice = formatPrice(product.oldPrice);
+
+  return (
+    <RouterLink
+      to={`/product/${product.id}`}
+      className="group content-stretch flex flex-col items-start"
+    >
+      <div className="relative overflow-hidden rounded-[3px] w-full">
+        <img
+          alt={product.name}
+          className="w-full aspect-[302/354] object-cover transition-opacity duration-500"
+          src={product.image}
+        />
+        {product.secondaryImage && (
+          <img
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            src={product.secondaryImage}
+          />
+        )}
+      </div>
+      <div className="flex flex-col gap-[12px] pt-[20px] w-full">
+        <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] text-[#222] text-[14px]">
+          <p className="leading-[21px]">{product.name}</p>
+        </div>
+        <div className="flex items-center gap-[6px] text-[#b5b5b5] text-[12px] font-['Jost:Medium',sans-serif]">
+          <RatingRow rating={product.rating} />
+          <span className="leading-[24px]">({product.reviews})</span>
+        </div>
+        <div className="font-['Jost:Bold',sans-serif] font-bold text-[14px] text-[#232630]">
+          {price && <span className="leading-[14px]">{price}</span>}
+          {oldPrice && (
+            <span className="leading-[14px] text-[#7c7c7c] line-through ml-[10px]">{oldPrice}</span>
+          )}
+        </div>
+      </div>
+    </RouterLink>
+  );
+}
+
+function ProductGrid({
+  filters,
+  sortBy,
+}: {
+  filters: FilterState;
+  sortBy: string;
+}) {
+  const filteredProducts = products
+    .filter((product) => {
+      const price = product.price ?? 0;
+      const matchesCategory =
+        filters.selectedCategories.length === 0 ||
+        filters.selectedCategories.includes(product.category);
+      const matchesBrand =
+        filters.selectedBrands.length === 0 ||
+        filters.selectedBrands.includes(product.brand);
+      const matchesSize =
+        filters.selectedSizes.length === 0 ||
+        product.sizes.some((size) => filters.selectedSizes.includes(size));
+      const matchesColor =
+        filters.selectedColors.length === 0 ||
+        product.colors.some((color) => filters.selectedColors.includes(color));
+      const matchesRating =
+        filters.selectedRatings.length === 0 ||
+        filters.selectedRatings.some((rating) => product.rating >= rating);
+      const matchesPrice =
+        price >= filters.minSelectedPrice && price <= filters.maxSelectedPrice;
+
+      return (
+        matchesCategory &&
+        matchesBrand &&
+        matchesSize &&
+        matchesColor &&
+        matchesRating &&
+        matchesPrice
+      );
+    })
+    .sort((a, b) => {
+      if (sortBy === "price-asc") {
+        return (a.price ?? 0) - (b.price ?? 0);
+      }
+      if (sortBy === "price-desc") {
+        return (b.price ?? 0) - (a.price ?? 0);
+      }
+      return 0;
+    });
+
+  return (
+    <div className="grid grid-cols-3 gap-[30px]">
+      {filteredProducts.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  );
+}
 
 function Heading() {
   return (
@@ -45,7 +298,9 @@ function Paragraph() {
   return (
     <div className="h-[16px] relative shrink-0 w-full" data-name="Paragraph">
       <div className="-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] left-[calc(50%-26.48px)] text-[#222] text-[12px] text-center top-[8px] whitespace-nowrap">
-        <p className="leading-[16px]">Home</p>
+        <RouterLink to="/" className="leading-[16px] hover:text-[#0db22a] transition-colors">
+          Home
+        </RouterLink>
       </div>
       <div className="-translate-x-1/2 absolute h-[6.997px] left-[calc(50%+2.2px)] top-[5.85px] w-[3.5px]" data-name="Symbol">
         <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 3.5 6.99684">
@@ -53,7 +308,9 @@ function Paragraph() {
         </svg>
       </div>
       <div className="-translate-x-1/2 -translate-y-1/2 absolute flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] left-[calc(50%+29.2px)] text-[#222] text-[12px] text-center top-[8px] whitespace-nowrap">
-        <p className="leading-[16px]">Shop</p>
+        <RouterLink to="/products" className="leading-[16px] hover:text-[#0db22a] transition-colors">
+          Shop
+        </RouterLink>
       </div>
     </div>
   );
@@ -72,7 +329,7 @@ function Container1() {
 
 function Masthead() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 pb-[160px] pt-[160.8px] px-[100.4px] right-0 top-[169px]" data-name="masthead">
+    <div className="absolute content-stretch flex flex-col items-start left-0 pb-[160px] pt-[160.8px] px-[100.4px] right-0 top-0" data-name="masthead">
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div className="absolute bg-white inset-0" />
         <div className="absolute inset-0 overflow-hidden">
@@ -97,9 +354,13 @@ function Kid() {
 
 function Link() {
   return (
-    <div className="content-stretch flex items-start justify-center relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-start justify-center relative shrink-0"
+      data-name="Link"
+    >
       <Kid />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -169,9 +430,13 @@ function Lifestyle() {
 
 function Link1() {
   return (
-    <div className="content-stretch flex items-start justify-center relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-start justify-center relative shrink-0"
+      data-name="Link"
+    >
       <Lifestyle />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -241,9 +506,13 @@ function Men() {
 
 function Link2() {
   return (
-    <div className="content-stretch flex items-start justify-center relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-start justify-center relative shrink-0"
+      data-name="Link"
+    >
       <Men />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -313,9 +582,13 @@ function RunningShoes() {
 
 function Link3() {
   return (
-    <div className="content-stretch flex items-start justify-center relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-start justify-center relative shrink-0"
+      data-name="Link"
+    >
       <RunningShoes />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -385,9 +658,13 @@ function Skate() {
 
 function Link4() {
   return (
-    <div className="content-stretch flex items-start justify-center relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-start justify-center relative shrink-0"
+      data-name="Link"
+    >
       <Skate />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -553,7 +830,11 @@ function Heading6() {
 
 function Container35() {
   return (
-    <div className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]" data-name="Container">
+    <div
+      className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]"
+      data-name="Container"
+      data-filter-arrow
+    >
       <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10 5.70521">
         <g id="Container">
           <path d={svgPaths.p39cb1d00} fill="var(--fill-0, #222222)" id="Symbol" />
@@ -565,7 +846,11 @@ function Container35() {
 
 function Heading7() {
   return (
-    <div className="h-[39px] relative shrink-0 w-full" data-name="Heading 5">
+    <div
+      className="h-[39px] relative shrink-0 w-full cursor-pointer select-none"
+      data-name="Heading 5"
+      data-filter-toggle="categories"
+    >
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
         <div className="-translate-y-1/2 absolute flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] left-0 text-[#222] text-[16px] top-[12px] whitespace-nowrap">
           <p className="leading-[24px]">Categories</p>
@@ -853,7 +1138,11 @@ function Container37() {
 
 function Container36() {
   return (
-    <div className="relative shrink-0 w-[251.9px]" data-name="Container">
+    <div
+      className="relative shrink-0 w-[251.9px]"
+      data-name="Container"
+      data-filter-content="categories"
+    >
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[32px] relative size-full">
         <div className="absolute bg-[#ececec] h-px left-0 top-0 w-[234.9px]" data-name="Horizontal Divider" />
         <Container37 />
@@ -862,13 +1151,48 @@ function Container36() {
   );
 }
 
-function Border() {
+function Border({
+  categories,
+  counts,
+  selected,
+  onToggle,
+}: {
+  categories: string[];
+  counts: Record<string, number>;
+  selected: string[];
+  onToggle: (value: string) => void;
+}) {
   return (
     <div className="relative rounded-[5px] shrink-0 w-full" data-name="Border">
       <div aria-hidden="true" className="absolute border border-[#ececec] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="content-stretch flex flex-col items-start pb-[30.8px] pt-[15.8px] px-[28.8px] relative size-full">
         <Heading7 />
-        <Container36 />
+        <div
+          className="relative shrink-0 w-[251.9px]"
+          data-name="Container"
+          data-filter-content="categories"
+        >
+          <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[32px] relative size-full">
+            <div className="absolute bg-[#ececec] h-px left-0 top-0 w-[234.9px]" data-name="Horizontal Divider" />
+            <div className="max-h-[300px] relative shrink-0 w-full" data-name="Container">
+              <div className="max-h-[inherit] overflow-x-clip overflow-y-auto size-full">
+                <div className="content-stretch flex flex-col items-start max-h-[inherit] pr-[17px] relative size-full">
+                  <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full" data-name="List">
+                    {categories.map((category) => (
+                      <SidebarCheckbox
+                        key={category}
+                        label={category}
+                        count={counts[category] ?? 0}
+                        checked={selected.includes(category)}
+                        onChange={() => onToggle(category)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -876,7 +1200,11 @@ function Border() {
 
 function Container38() {
   return (
-    <div className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]" data-name="Container">
+    <div
+      className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]"
+      data-name="Container"
+      data-filter-arrow
+    >
       <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10 5.70521">
         <g id="Container">
           <path d={svgPaths.p39cb1d00} fill="var(--fill-0, #222222)" id="Symbol" />
@@ -888,7 +1216,11 @@ function Container38() {
 
 function Heading8() {
   return (
-    <div className="h-[39px] relative shrink-0 w-full" data-name="Heading 5">
+    <div
+      className="h-[39px] relative shrink-0 w-full cursor-pointer select-none"
+      data-name="Heading 5"
+      data-filter-toggle="price"
+    >
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
         <div className="-translate-y-1/2 absolute flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] left-0 text-[#222] text-[16px] top-[12px] whitespace-nowrap">
           <p className="leading-[24px]">Price</p>
@@ -1000,7 +1332,7 @@ function Container43() {
 
 function Link13() {
   return (
-    <div className="bg-black content-stretch flex items-start px-[20px] relative rounded-[3px] shrink-0" data-name="Link">
+    <div className="bg-black content-stretch flex items-start px-[20px] relative rounded-[3px] shrink-0 hover:bg-[#0db22a] transition-colors duration-200 cursor-pointer" data-name="Link">
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[14px] text-white uppercase whitespace-nowrap">
         <p className="leading-[36px]">FILTER</p>
       </div>
@@ -1118,6 +1450,131 @@ function Container41() {
   );
 }
 
+function PriceRange({
+  minLimit = 0,
+  maxLimit = 0,
+  minValue = 0,
+  maxValue = 0,
+  onMinChange = () => {},
+  onMaxChange = () => {},
+}: {
+  minLimit?: number;
+  maxLimit?: number;
+  minValue?: number;
+  maxValue?: number;
+  onMinChange?: (value: number) => void;
+  onMaxChange?: (value: number) => void;
+}) {
+  const handleMinChange = (value: number) => {
+    onMinChange(Math.min(value, maxValue - 1));
+  };
+
+  const handleMaxChange = (value: number) => {
+    onMaxChange(Math.max(value, minValue + 1));
+  };
+
+  const minPercent = ((minValue - minLimit) / (maxLimit - minLimit)) * 100;
+  const maxPercent = ((maxValue - minLimit) / (maxLimit - minLimit)) * 100;
+
+  return (
+    <div className="relative shrink-0 w-full" data-name="Container">
+      <div className="content-stretch flex flex-col items-start relative size-full">
+        <div className="content-stretch flex flex-col items-start relative size-full gap-[20px]">
+          {/* Slider Track Area */}
+          <div className="relative w-full h-[40px] mt-[5px]">
+            {/* Track background */}
+            <div className="absolute bg-white border border-[#ababab] border-solid h-[7px] left-0 right-0 rounded-[5px] top-1/2 -translate-y-1/2" data-name="Background+Border">
+              {/* Active range fill */}
+              <div
+                className="absolute bg-[#60ff00] border border-[#60ff00] border-solid rounded-[5px] h-full"
+                style={{ left: `${minPercent}%`, right: `${100 - maxPercent}%` }}
+                data-name="Background+Border"
+              />
+            </div>
+
+            {/* Min thumb */}
+            <div
+              className="absolute -translate-y-1/2 top-1/2 z-[2]"
+              style={{ left: `calc(${minPercent}% - 13.5px)` }}
+            >
+              <div className="bg-white content-stretch flex flex-col items-start p-[4px] relative rounded-[9.5px] shrink-0 size-[27px]" data-name="Background+Border">
+                <div aria-hidden="true" className="absolute border-4 border-solid border-white inset-0 pointer-events-none rounded-[9.5px]" />
+                <div className="bg-[rgba(255,255,255,0)] relative rounded-[9.5px] shadow-[0px_0px_0px_1px_#60ff00] shrink-0 size-[19px]" data-name="Overlay+Shadow" />
+              </div>
+            </div>
+
+            {/* Max thumb */}
+            <div
+              className="absolute -translate-y-1/2 top-1/2 z-[2]"
+              style={{ left: `calc(${maxPercent}% - 13.5px)` }}
+            >
+              <div className="bg-white content-stretch flex flex-col items-start p-[4px] relative rounded-[9.5px] shrink-0 size-[27px]" data-name="Background+Border">
+                <div aria-hidden="true" className="absolute border-4 border-solid border-white inset-0 pointer-events-none rounded-[9.5px]" />
+                <div className="bg-[rgba(255,255,255,0)] relative rounded-[9.5px] shadow-[0px_0px_0px_1px_#60ff00] shrink-0 size-[19px]" data-name="Overlay+Shadow" />
+              </div>
+            </div>
+
+            {/* Hidden range inputs for interaction */}
+            <input
+              type="range"
+              min={minLimit}
+              max={maxLimit}
+              value={minValue}
+              onChange={(event) => handleMinChange(Number(event.target.value))}
+              className="absolute left-0 right-0 top-0 h-full opacity-0 cursor-pointer z-[3]"
+              style={{ pointerEvents: 'auto' }}
+              aria-label="Minimum price"
+            />
+            <input
+              type="range"
+              min={minLimit}
+              max={maxLimit}
+              value={maxValue}
+              onChange={(event) => handleMaxChange(Number(event.target.value))}
+              className="absolute left-0 right-0 top-0 h-full opacity-0 cursor-pointer z-[3]"
+              style={{ pointerEvents: 'auto' }}
+              aria-label="Maximum price"
+            />
+          </div>
+
+          {/* Price labels below slider */}
+          <div className="flex items-center justify-between w-full">
+            <div className="flex flex-col font-['Jost:SemiBold',sans-serif] font-semibold justify-center leading-[0] text-[#909090] text-[10px] whitespace-nowrap">
+              <p className="leading-[15px]">${minLimit}.00</p>
+            </div>
+            <div className="flex flex-col font-['Jost:SemiBold',sans-serif] font-semibold justify-center leading-[0] text-[#909090] text-[10px] whitespace-nowrap">
+              <p className="leading-[15px]">${maxLimit}.00</p>
+            </div>
+          </div>
+
+          {/* Ranger text */}
+          <div className="content-stretch flex h-[24px] items-center relative shrink-0 w-full gap-[4px]" data-name="Container">
+            <div className="flex flex-col font-['Jost:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#505157] text-[12px] whitespace-nowrap">
+              <p className="leading-[24px]">{`Ranger ($):`}</p>
+            </div>
+            <div className="flex flex-col font-['Jost:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#505157] text-[12px] whitespace-nowrap">
+              <p className="leading-[24px]">{minValue}</p>
+            </div>
+            <div className="flex flex-col font-['Jost:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#505157] text-[12px] whitespace-nowrap">
+              <p className="leading-[24px]">-</p>
+            </div>
+            <div className="flex flex-col font-['Jost:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#505157] text-[12px] whitespace-nowrap">
+              <p className="leading-[24px]">{maxValue}</p>
+            </div>
+          </div>
+
+          {/* FILTER button */}
+          <div className="bg-black content-stretch flex items-start px-[20px] relative rounded-[3px] shrink-0 hover:bg-[#0db22a] transition-colors duration-200 cursor-pointer" data-name="Link">
+            <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[14px] text-white uppercase whitespace-nowrap">
+              <p className="leading-[36px]">FILTER</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Container40() {
   return (
     <div className="max-h-[300px] relative shrink-0 w-full" data-name="Container">
@@ -1131,23 +1588,48 @@ function Container40() {
 }
 
 function Container39() {
-  return (
-    <div className="relative shrink-0 w-[251.9px]" data-name="Container">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[32px] relative size-full">
-        <div className="absolute bg-[#ececec] h-px left-0 top-0 w-[234.9px]" data-name="Horizontal Divider" />
-        <Container40 />
-      </div>
-    </div>
-  );
+  return null;
 }
 
-function Border1() {
+function Border1({
+  minLimit,
+  maxLimit,
+  minValue,
+  maxValue,
+  onMinChange,
+  onMaxChange,
+}: {
+  minLimit: number;
+  maxLimit: number;
+  minValue: number;
+  maxValue: number;
+  onMinChange: (value: number) => void;
+  onMaxChange: (value: number) => void;
+}) {
   return (
     <div className="relative rounded-[5px] shrink-0 w-full" data-name="Border">
       <div aria-hidden="true" className="absolute border border-[#ececec] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="content-stretch flex flex-col items-start pb-[30.8px] pt-[15.8px] px-[28.8px] relative size-full">
         <Heading8 />
-        <Container39 />
+        <div
+          className="relative shrink-0 w-[251.9px]"
+          data-name="Container"
+          data-filter-content="price"
+        >
+          <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[32px] relative size-full">
+            <div className="absolute bg-[#ececec] h-px left-0 top-0 w-[234.9px]" data-name="Horizontal Divider" />
+            <div className="flex flex-col gap-[16px] w-full">
+              <PriceRange
+                minLimit={minLimit}
+                maxLimit={maxLimit}
+                minValue={minValue}
+                maxValue={maxValue}
+                onMinChange={onMinChange}
+                onMaxChange={onMaxChange}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1155,7 +1637,11 @@ function Border1() {
 
 function Container57() {
   return (
-    <div className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]" data-name="Container">
+    <div
+      className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]"
+      data-name="Container"
+      data-filter-arrow
+    >
       <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10 5.70521">
         <g id="Container">
           <path d={svgPaths.p39cb1d00} fill="var(--fill-0, #222222)" id="Symbol" />
@@ -1167,7 +1653,11 @@ function Container57() {
 
 function Heading9() {
   return (
-    <div className="h-[39px] relative shrink-0 w-full" data-name="Heading 5">
+    <div
+      className="h-[39px] relative shrink-0 w-full cursor-pointer select-none"
+      data-name="Heading 5"
+      data-filter-toggle="brands"
+    >
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
         <div className="-translate-y-1/2 absolute flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] left-0 text-[#222] text-[16px] top-[12px] whitespace-nowrap">
           <p className="leading-[24px]">Brands</p>
@@ -1359,7 +1849,11 @@ function Container59() {
 
 function Container58() {
   return (
-    <div className="relative shrink-0 w-[251.9px]" data-name="Container">
+    <div
+      className="relative shrink-0 w-[251.9px]"
+      data-name="Container"
+      data-filter-content="brands"
+    >
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[32px] relative size-full">
         <div className="absolute bg-[#ececec] h-px left-0 top-0 w-[234.9px]" data-name="Horizontal Divider" />
         <Container59 />
@@ -1368,13 +1862,48 @@ function Container58() {
   );
 }
 
-function Border2() {
+function Border2({
+  brands,
+  counts,
+  selected,
+  onToggle,
+}: {
+  brands: string[];
+  counts: Record<string, number>;
+  selected: string[];
+  onToggle: (value: string) => void;
+}) {
   return (
     <div className="relative rounded-[5px] shrink-0 w-full" data-name="Border">
       <div aria-hidden="true" className="absolute border border-[#ececec] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="content-stretch flex flex-col items-start pb-[30.8px] pt-[15.8px] px-[28.8px] relative size-full">
         <Heading9 />
-        <Container58 />
+        <div
+          className="relative shrink-0 w-[251.9px]"
+          data-name="Container"
+          data-filter-content="brands"
+        >
+          <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[32px] relative size-full">
+            <div className="absolute bg-[#ececec] h-px left-0 top-0 w-[234.9px]" data-name="Horizontal Divider" />
+            <div className="max-h-[300px] relative shrink-0 w-full" data-name="Container">
+              <div className="max-h-[inherit] overflow-x-clip overflow-y-auto size-full">
+                <div className="content-stretch flex flex-col items-start max-h-[inherit] pr-[17px] relative size-full">
+                  <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full" data-name="List">
+                    {brands.map((brand) => (
+                      <SidebarCheckbox
+                        key={brand}
+                        label={brand}
+                        count={counts[brand] ?? 0}
+                        checked={selected.includes(brand)}
+                        onChange={() => onToggle(brand)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1382,7 +1911,11 @@ function Border2() {
 
 function Container60() {
   return (
-    <div className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]" data-name="Container">
+    <div
+      className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]"
+      data-name="Container"
+      data-filter-arrow
+    >
       <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10 5.70521">
         <g id="Container">
           <path d={svgPaths.p39cb1d00} fill="var(--fill-0, #222222)" id="Symbol" />
@@ -1394,7 +1927,11 @@ function Container60() {
 
 function Heading10() {
   return (
-    <div className="h-[39px] relative shrink-0 w-full" data-name="Heading 5">
+    <div
+      className="h-[39px] relative shrink-0 w-full cursor-pointer select-none"
+      data-name="Heading 5"
+      data-filter-toggle="ratings"
+    >
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
         <div className="-translate-y-1/2 absolute flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] left-0 text-[#222] text-[16px] top-[12px] whitespace-nowrap">
           <p className="leading-[24px]">Ratings</p>
@@ -1737,7 +2274,11 @@ function Container62() {
 
 function Container61() {
   return (
-    <div className="relative shrink-0 w-[251.9px]" data-name="Container">
+    <div
+      className="relative shrink-0 w-[251.9px]"
+      data-name="Container"
+      data-filter-content="ratings"
+    >
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[32px] relative size-full">
         <div className="absolute bg-[#ececec] h-px left-0 top-0 w-[234.9px]" data-name="Horizontal Divider" />
         <Container62 />
@@ -1746,13 +2287,54 @@ function Container61() {
   );
 }
 
-function Border3() {
+function Border3({
+  ratings,
+  counts,
+  selected,
+  onToggle,
+}: {
+  ratings: number[];
+  counts: Record<number, number>;
+  selected: number[];
+  onToggle: (value: number) => void;
+}) {
   return (
     <div className="relative rounded-[5px] shrink-0 w-full" data-name="Border">
       <div aria-hidden="true" className="absolute border border-[#ececec] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="content-stretch flex flex-col items-start pb-[30.8px] pt-[15.8px] px-[28.8px] relative size-full">
         <Heading10 />
-        <Container61 />
+        <div
+          className="relative shrink-0 w-[251.9px]"
+          data-name="Container"
+          data-filter-content="ratings"
+        >
+          <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pt-[32px] relative size-full">
+            <div className="absolute bg-[#ececec] h-px left-0 top-0 w-[234.9px]" data-name="Horizontal Divider" />
+            <div className="max-h-[300px] relative shrink-0 w-full" data-name="Container">
+              <div className="max-h-[inherit] overflow-x-clip overflow-y-auto size-full">
+                <div className="content-stretch flex flex-col items-start max-h-[inherit] pr-[17px] relative size-full">
+                  <div className="content-stretch flex flex-col gap-[18px] items-start relative shrink-0 w-full" data-name="List">
+                    {ratings.map((rating) => (
+                      <label
+                        key={rating}
+                        className="flex items-center gap-[12px] text-[#909090] text-[12px] cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selected.includes(rating)}
+                          onChange={() => onToggle(rating)}
+                          className="size-[18px] rounded-[3px] border border-[#c8c8c8] accent-[#0db22a]"
+                        />
+                        <RatingRow rating={rating} />
+                        <span className="leading-[16px]">({counts[rating] ?? 0})</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1760,7 +2342,11 @@ function Border3() {
 
 function Container78() {
   return (
-    <div className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]" data-name="Container">
+    <div
+      className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]"
+      data-name="Container"
+      data-filter-arrow
+    >
       <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10 5.70521">
         <g id="Container">
           <path d={svgPaths.p39cb1d00} fill="var(--fill-0, #222222)" id="Symbol" />
@@ -1772,7 +2358,11 @@ function Container78() {
 
 function Heading11() {
   return (
-    <div className="absolute h-[39px] left-[28.8px] right-[28.8px] top-[15.8px]" data-name="Heading 5">
+    <div
+      className="absolute h-[39px] left-[28.8px] right-[28.8px] top-[15.8px] cursor-pointer select-none"
+      data-name="Heading 5"
+      data-filter-toggle="colors"
+    >
       <div className="-translate-y-1/2 absolute flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] left-0 text-[#222] text-[16px] top-[12px] whitespace-nowrap">
         <p className="leading-[24px]">Colors</p>
       </div>
@@ -2018,26 +2608,67 @@ function Container80() {
 
 function Container79() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-[22.8px] pt-[26px] right-[11.8px] top-[54.8px]" data-name="Container">
+    <div
+      className="absolute content-stretch flex flex-col items-start left-[22.8px] pt-[26px] right-[11.8px] top-[54.8px]"
+      data-name="Container"
+      data-filter-content="colors"
+    >
       <Container80 />
       <div className="absolute bg-[#ececec] h-px left-[6px] top-0 w-[234.9px]" data-name="Horizontal Divider" />
     </div>
   );
 }
 
-function Border4() {
+function Border4({
+  colors,
+  counts,
+  selected,
+  onToggle,
+}: {
+  colors: Array<{ value: string; hex: string }>;
+  counts: Record<string, number>;
+  selected: string[];
+  onToggle: (value: string) => void;
+}) {
   return (
-    <div className="h-[315.6px] relative rounded-[5px] shrink-0 w-full" data-name="Border">
+    <div
+      className="h-[315.6px] relative rounded-[5px] shrink-0 w-full"
+      data-name="Border"
+      data-filter-section="colors"
+    >
       <div aria-hidden="true" className="absolute border border-[#ececec] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <Heading11 />
-      <Container79 />
+      <div
+        className="absolute content-stretch flex flex-col items-start left-[22.8px] pt-[26px] right-[11.8px] top-[54.8px]"
+        data-name="Container"
+        data-filter-content="colors"
+      >
+        <div className="content-stretch flex flex-col items-start max-h-[300px] overflow-x-clip overflow-y-auto pr-[17px] relative shrink-0 w-[263.9px]">
+          <div className="grid grid-cols-5 gap-[12px]">
+            {colors.map((color) => (
+              <ColorSwatch
+                key={color.value}
+                value={color.value}
+                hex={color.hex}
+                checked={selected.includes(color.value)}
+                onToggle={() => onToggle(color.value)}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="absolute bg-[#ececec] h-px left-[6px] top-0 w-[234.9px]" data-name="Horizontal Divider" />
+      </div>
     </div>
   );
 }
 
 function Container81() {
   return (
-    <div className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]" data-name="Container">
+    <div
+      className="absolute h-[5.705px] right-0 top-[-0.7px] w-[10px]"
+      data-name="Container"
+      data-filter-arrow
+    >
       <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 10 5.70521">
         <g id="Container">
           <path d={svgPaths.p39cb1d00} fill="var(--fill-0, #222222)" id="Symbol" />
@@ -2049,7 +2680,11 @@ function Container81() {
 
 function Heading12() {
   return (
-    <div className="absolute h-[39px] left-[28.8px] right-[28.8px] top-[15.8px]" data-name="Heading 5">
+    <div
+      className="absolute h-[39px] left-[28.8px] right-[28.8px] top-[15.8px] cursor-pointer select-none"
+      data-name="Heading 5"
+      data-filter-toggle="sizes"
+    >
       <div className="-translate-y-1/2 absolute flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] left-0 text-[#222] text-[16px] top-[12px] whitespace-nowrap">
         <p className="leading-[24px]">Sizes</p>
       </div>
@@ -2285,34 +2920,192 @@ function Container83() {
 
 function Container82() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-[22.8px] pt-[26px] right-[11.8px] top-[54.8px]" data-name="Container">
+    <div
+      className="absolute content-stretch flex flex-col items-start left-[22.8px] pt-[26px] right-[11.8px] top-[54.8px]"
+      data-name="Container"
+      data-filter-content="sizes"
+    >
       <div className="absolute bg-[#ececec] h-px left-[6px] top-0 w-[234.9px]" data-name="Horizontal Divider" />
       <Container83 />
     </div>
   );
 }
 
-function Border5() {
+function Border5({
+  sizes,
+  counts,
+  selected,
+  onToggle,
+}: {
+  sizes: string[];
+  counts: Record<string, number>;
+  selected: string[];
+  onToggle: (value: string) => void;
+}) {
   return (
     <div className="h-[405.6px] relative rounded-[5px] shrink-0 w-full" data-name="Border">
       <div aria-hidden="true" className="absolute border border-[#ececec] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <Heading12 />
-      <Container82 />
+      <div
+        className="absolute content-stretch flex flex-col items-start left-[22.8px] pt-[26px] right-[11.8px] top-[54.8px]"
+        data-name="Container"
+        data-filter-content="sizes"
+      >
+        <div className="absolute bg-[#ececec] h-px left-[6px] top-0 w-[234.9px]" data-name="Horizontal Divider" />
+        <div className="h-[300px] max-h-[300px] overflow-x-clip overflow-y-auto relative shrink-0 w-[263.9px]">
+          <div className="flex flex-col gap-[14px] pl-[6px] pt-[4px]">
+            {sizes.map((size) => (
+              <SidebarCheckbox
+                key={size}
+                label={size}
+                count={counts[size] ?? 0}
+                checked={selected.includes(size)}
+                onChange={() => onToggle(size)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
-function Container33() {
+function handleFilterClick(event: { target: EventTarget | null; currentTarget: HTMLDivElement }) {
+  const target = event.target as HTMLElement | null;
+  if (!target) return;
+
+  const toggle = target.closest("[data-filter-toggle]") as HTMLElement | null;
+  if (toggle) {
+    const section = toggle.getAttribute("data-filter-toggle");
+    if (!section) return;
+
+    const content = event.currentTarget.querySelector(`[data-filter-content="${section}"]`) as HTMLElement | null;
+    if (content) {
+      const isHidden = content.classList.toggle("hidden");
+      const arrow = toggle.querySelector("[data-filter-arrow]") as HTMLElement | null;
+      if (arrow) {
+        arrow.style.transform = isHidden ? "rotate(0deg)" : "rotate(180deg)";
+      }
+    }
+    return;
+  }
+
+  return;
+}
+
+function Container33({
+  filters,
+  setFilters,
+  priceBounds,
+}: {
+  filters: FilterState;
+  setFilters: (updater: (prev: FilterState) => FilterState) => void;
+  priceBounds: { minPrice: number; maxPrice: number };
+}) {
+  const brandOptions = Array.from(new Set(products.map((product) => product.brand))).sort();
+  const sizeOptions = Array.from(
+    new Set(products.flatMap((product) => product.sizes))
+  ).sort((a, b) => Number(a) - Number(b));
+  const categoryCounts = buildCountMap(products, (product) => product.category);
+  const brandCounts = buildCountMap(products, (product) => product.brand);
+  const sizeCounts = products.reduce<Record<string, number>>((acc, product) => {
+    product.sizes.forEach((size) => {
+      acc[size] = (acc[size] ?? 0) + 1;
+    });
+    return acc;
+  }, {});
+  const colorCounts = products.reduce<Record<string, number>>((acc, product) => {
+    product.colors.forEach((color) => {
+      acc[color] = (acc[color] ?? 0) + 1;
+    });
+    return acc;
+  }, {});
+  const ratingOptions = [5, 4, 3, 2, 1];
+  const ratingCounts = ratingOptions.reduce<Record<number, number>>((acc, rating) => {
+    acc[rating] = products.filter((product) => product.rating >= rating).length;
+    return acc;
+  }, {});
+
   return (
     <div className="relative self-stretch shrink-0 w-[322.5px]" data-name="Container">
-      <div className="content-stretch flex flex-col gap-[30px] items-start pr-[30px] py-[100px] relative size-full">
+      <div
+        className="content-stretch flex flex-col gap-[30px] items-start pr-[30px] py-[100px] relative size-full"
+        onClick={handleFilterClick}
+      >
         <Heading6 />
-        <Border />
-        <Border1 />
-        <Border2 />
-        <Border3 />
-        <Border4 />
-        <Border5 />
+        <Border
+          categories={categoryOptions}
+          counts={categoryCounts}
+          selected={filters.selectedCategories}
+          onToggle={(value) =>
+            setFilters((prev) => ({
+              ...prev,
+              selectedCategories: toggleValue(prev.selectedCategories, value),
+            }))
+          }
+        />
+        <Border1
+          minLimit={priceBounds.minPrice}
+          maxLimit={priceBounds.maxPrice}
+          minValue={filters.minSelectedPrice}
+          maxValue={filters.maxSelectedPrice}
+          onMinChange={(value) =>
+            setFilters((prev) => ({
+              ...prev,
+              minSelectedPrice: value,
+            }))
+          }
+          onMaxChange={(value) =>
+            setFilters((prev) => ({
+              ...prev,
+              maxSelectedPrice: value,
+            }))
+          }
+        />
+        <Border2
+          brands={brandOptions}
+          counts={brandCounts}
+          selected={filters.selectedBrands}
+          onToggle={(value) =>
+            setFilters((prev) => ({
+              ...prev,
+              selectedBrands: toggleValue(prev.selectedBrands, value),
+            }))
+          }
+        />
+        <Border3
+          ratings={ratingOptions}
+          counts={ratingCounts}
+          selected={filters.selectedRatings}
+          onToggle={(value) =>
+            setFilters((prev) => ({
+              ...prev,
+              selectedRatings: toggleNumber(prev.selectedRatings, value),
+            }))
+          }
+        />
+        <Border4
+          colors={colorOptions}
+          counts={colorCounts}
+          selected={filters.selectedColors}
+          onToggle={(value) =>
+            setFilters((prev) => ({
+              ...prev,
+              selectedColors: toggleValue(prev.selectedColors, value),
+            }))
+          }
+        />
+        <Border5
+          sizes={sizeOptions}
+          counts={sizeCounts}
+          selected={filters.selectedSizes}
+          onToggle={(value) =>
+            setFilters((prev) => ({
+              ...prev,
+              selectedSizes: toggleValue(prev.selectedSizes, value),
+            }))
+          }
+        />
       </div>
     </div>
   );
@@ -2505,10 +3298,14 @@ function SecondImageOfAirJordanDmp1Retro() {
 
 function Link19() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro />
       <SecondImageOfAirJordanDmp1Retro />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2533,11 +3330,15 @@ function Container94() {
 
 function Link20() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">Air Jordan DMP 1 Retro</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2634,10 +3435,14 @@ function SecondImageOfAirJordanDmp1Retro1() {
 
 function Link21() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro1 />
       <SecondImageOfAirJordanDmp1Retro1 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2662,11 +3467,15 @@ function Container101() {
 
 function Link22() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">Calvin Klein Jeans</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2763,10 +3572,14 @@ function SecondImageOfAirJordanDmp1Retro2() {
 
 function Link23() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro2 />
       <SecondImageOfAirJordanDmp1Retro2 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2791,11 +3604,15 @@ function Container108() {
 
 function Link24() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">{`Canvas Men's Sneakers`}</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2892,10 +3709,14 @@ function SecondImageOfAirJordanDmp1Retro3() {
 
 function Link25() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro3 />
       <SecondImageOfAirJordanDmp1Retro3 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2920,11 +3741,15 @@ function Container115() {
 
 function Link26() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">Converse Run Star Hike</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3021,10 +3846,14 @@ function SecondImageOfAirJordanDmp1Retro4() {
 
 function Link27() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro4 />
       <SecondImageOfAirJordanDmp1Retro4 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3049,11 +3878,15 @@ function Container122() {
 
 function Link28() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">Converse Run Star Motion</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3150,10 +3983,14 @@ function SecondImageOfAirJordanDmp1Retro5() {
 
 function Link29() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro5 />
       <SecondImageOfAirJordanDmp1Retro5 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3178,11 +4015,15 @@ function Container129() {
 
 function Link30() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">Jordan Luka 1 Basketball</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3282,10 +4123,14 @@ function SecondImageOfAirJordanDmp1Retro6() {
 
 function Link31() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro6 />
       <SecondImageOfAirJordanDmp1Retro6 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3310,11 +4155,15 @@ function Container136() {
 
 function Link32() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">K1X Men H1KE Boot</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3414,10 +4263,14 @@ function SecondImageOfAirJordanDmp1Retro7() {
 
 function Link33() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro7 />
       <SecondImageOfAirJordanDmp1Retro7 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3442,11 +4295,15 @@ function Container143() {
 
 function Link34() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">{`K1X Men's Philly Boot`}</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3543,10 +4400,14 @@ function SecondImageOfAirJordanDmp1Retro8() {
 
 function Link35() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro8 />
       <SecondImageOfAirJordanDmp1Retro8 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3571,11 +4432,15 @@ function Container150() {
 
 function Link36() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">Luka Doncic x Air Jordan</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3675,10 +4540,14 @@ function SecondImageOfAirJordanDmp1Retro9() {
 
 function Link37() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro9 />
       <SecondImageOfAirJordanDmp1Retro9 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3703,11 +4572,15 @@ function Container157() {
 
 function Link38() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">{`Men's Air Jordan 14 Retro`}</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3804,10 +4677,14 @@ function SecondImageOfAirJordanDmp1Retro10() {
 
 function Link39() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro10 />
       <SecondImageOfAirJordanDmp1Retro10 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3832,11 +4709,15 @@ function Container164() {
 
 function Link40() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">{`Men's Air Jordan 2 Retro`}</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3936,10 +4817,14 @@ function SecondImageOfAirJordanDmp1Retro11() {
 
 function Link41() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro11 />
       <SecondImageOfAirJordanDmp1Retro11 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3964,11 +4849,15 @@ function Container171() {
 
 function Link42() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">{`Men's Jordan Max Aura`}</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4046,44 +4935,17 @@ function Container169() {
   );
 }
 
-function Container91() {
+function Container91({
+  filters,
+  sortBy,
+}: {
+  filters: FilterState;
+  sortBy: string;
+}) {
   return (
     <div className="absolute h-[2399.7px] left-[-25px] overflow-clip right-[-25px] top-[-23px]" data-name="Container">
-      <div className="absolute content-stretch flex flex-col inset-[213px_675px_1685.77px_10px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container92 />
-      </div>
-      <div className="absolute content-stretch flex flex-col inset-[213px_342.5px_1685.77px_342.5px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container99 />
-      </div>
-      <div className="absolute content-stretch flex flex-col inset-[213px_10px_1685.77px_675px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container106 />
-      </div>
-      <div className="absolute content-stretch flex flex-col inset-[713.93px_675px_1184.84px_10px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container113 />
-      </div>
-      <div className="absolute content-stretch flex flex-col inset-[713.93px_342.5px_1184.84px_342.5px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container120 />
-      </div>
-      <div className="absolute content-stretch flex flex-col inset-[713.93px_10px_1184.84px_675px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container127 />
-      </div>
-      <div className="absolute content-stretch flex flex-col inset-[1214.85px_675px_683.92px_10px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container134 />
-      </div>
-      <div className="absolute content-stretch flex flex-col inset-[1214.85px_342.5px_683.92px_342.5px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container141 />
-      </div>
-      <div className="absolute content-stretch flex flex-col inset-[1214.85px_10px_683.92px_675px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container148 />
-      </div>
-      <div className="absolute content-stretch flex flex-col inset-[1715.78px_675px_182.99px_10px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container155 />
-      </div>
-      <div className="absolute content-stretch flex flex-col inset-[1715.78px_342.5px_182.99px_342.5px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container162 />
-      </div>
-      <div className="absolute content-stretch flex flex-col inset-[1715.78px_10px_182.99px_675px] items-start justify-center pb-[30px] px-[15px]" data-name="Sản phẩm">
-        <Container169 />
+      <div className="absolute inset-[213px_10px_182.99px_10px]" data-name="Sản phẩm">
+        <ProductGrid filters={filters} sortBy={sortBy} />
       </div>
     </div>
   );
@@ -4115,7 +4977,7 @@ function Background4() {
 
 function Button() {
   return (
-    <div className="-translate-x-1/2 absolute bg-[#ebebeb] content-stretch flex h-[48px] items-center justify-center left-1/2 min-w-[250px] pl-[80.68px] pr-[80.67px] rounded-[3px] top-[92px]" data-name="Button">
+    <div className="-translate-x-1/2 absolute bg-[#ebebeb] content-stretch flex h-[48px] items-center justify-center left-1/2 min-w-[250px] pl-[80.68px] pr-[80.67px] rounded-[3px] top-[92px] cursor-pointer" data-name="Button">
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[12px] text-center uppercase whitespace-nowrap">
         <p className="leading-[24px]">LOAD MORE ITEMS</p>
       </div>
@@ -4133,21 +4995,39 @@ function Nav() {
   );
 }
 
-function Container84() {
+function Container84({
+  filters,
+  sortBy,
+}: {
+  filters: FilterState;
+  sortBy: string;
+}) {
   return (
     <div className="relative self-stretch shrink-0 w-[967.5px]" data-name="Container">
       <Background />
-      <Container91 />
+      <Container91 filters={filters} sortBy={sortBy} />
       <Nav />
     </div>
   );
 }
 
 function Main() {
+  const priceBounds = getPriceBounds();
+  const [filters, setFilters] = useState<FilterState>({
+    selectedCategories: [],
+    selectedBrands: [],
+    selectedRatings: [],
+    selectedColors: [],
+    selectedSizes: [],
+    minSelectedPrice: priceBounds.minPrice,
+    maxSelectedPrice: priceBounds.maxPrice,
+  });
+  const [sortBy] = useState("default");
+
   return (
     <div className="absolute content-stretch flex h-[2389.2px] items-start left-[100.4px] max-w-[1320px] px-[15px] right-[100.4px] top-[789px]" data-name="Main">
-      <Container33 />
-      <Container84 />
+      <Container33 filters={filters} setFilters={setFilters} priceBounds={priceBounds} />
+      <Container84 filters={filters} sortBy={sortBy} />
     </div>
   );
 }
@@ -4624,11 +5504,15 @@ function Margin26() {
 
 function Link43() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Help Center</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4642,11 +5526,15 @@ function Item13() {
 
 function Link44() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Shipping Info</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4660,11 +5548,15 @@ function Item14() {
 
 function Link45() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Returns</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4678,11 +5570,15 @@ function Item15() {
 
 function Link46() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">How To Order</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4696,11 +5592,15 @@ function Item16() {
 
 function Link47() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">How To Track</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4714,11 +5614,15 @@ function Item17() {
 
 function Link48() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Size Guide</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4800,11 +5704,15 @@ function Margin27() {
 
 function Link49() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">About Us</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4818,11 +5726,15 @@ function Item19() {
 
 function Link50() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Our Blog</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4836,11 +5748,15 @@ function Item20() {
 
 function Link51() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Careers</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4854,11 +5770,15 @@ function Item21() {
 
 function Link52() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Store Locations</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4872,11 +5792,15 @@ function Item22() {
 
 function Link53() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Testimonial</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4890,11 +5814,15 @@ function Item23() {
 
 function Link54() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Sitemap</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -5622,9 +6550,9 @@ function Logo() {
 
 function Link55() {
   return (
-    <div className="content-stretch flex flex-col items-start relative shrink-0" data-name="Link">
+    <RouterLink to="/" className="content-stretch flex flex-col items-start relative shrink-0" data-name="Link">
       <Logo />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -5827,7 +6755,11 @@ function Container249() {
 
 function Link56() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[14px] uppercase whitespace-nowrap">
         <p className="leading-[24px]">HOME</p>
       </div>
@@ -5836,7 +6768,7 @@ function Link56() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -5850,7 +6782,11 @@ function Item25() {
 
 function Link57() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[14px] text-black uppercase whitespace-nowrap">
         <p className="leading-[24px]">SHOP</p>
       </div>
@@ -5859,7 +6795,7 @@ function Link57() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, black)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -5873,7 +6809,11 @@ function Item26() {
 
 function Link58() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[14px] uppercase whitespace-nowrap">
         <p className="leading-[24px]">PRODUCT</p>
       </div>
@@ -5882,7 +6822,7 @@ function Link58() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -5896,7 +6836,11 @@ function Item27() {
 
 function Link59() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[14px] uppercase whitespace-nowrap">
         <p className="leading-[24px]">BLOG</p>
       </div>
@@ -5905,7 +6849,7 @@ function Link59() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -6016,7 +6960,11 @@ function Container268() {
 
 function Background9() {
   return (
-    <div className="bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] sticky top-0" data-name="Background">
+    <div
+      className="fixed bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] bottom-[40px] right-[20px]"
+      data-name="Background"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
       <div className="absolute bottom-0 pointer-events-none right-0 rounded-[9999px] size-[46px]" data-name="Overlay+Shadow">
         <div aria-hidden="true" className="absolute bg-[rgba(255,255,255,0)] inset-0 rounded-[9999px]" />
         <div className="absolute inset-0 rounded-[inherit] shadow-[inset_0px_0px_0px_2px_rgba(34,34,34,0.2)]" />

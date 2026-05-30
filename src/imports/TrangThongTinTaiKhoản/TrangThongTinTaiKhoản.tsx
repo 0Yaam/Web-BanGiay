@@ -1,3 +1,4 @@
+import { Link as RouterLink } from "react-router";
 import svgPaths from "./svg-rb499v1m64";
 import imgMasthead from "./7e50743c804ee3c01b7423cd7410540d607630a7.png";
 import imgImageContact1Png from "./5c4ed1fb8eba4060c9be504390dcc8ba5484b36a.png";
@@ -49,7 +50,7 @@ function Container1() {
 
 function Masthead() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 pb-[160px] pt-[160.8px] px-[100.4px] right-0 top-[169px]" data-name="masthead">
+    <div className="absolute content-stretch flex flex-col items-start left-0 pb-[160px] pt-[160.8px] px-[100.4px] right-0 top-0" data-name="masthead">
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div className="absolute bg-white inset-0" />
         <div className="absolute inset-0 overflow-hidden">
@@ -741,7 +742,7 @@ function ArticleSection() {
 
 function Main() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 overflow-clip px-[115.4px] right-0 top-[564.8px]" data-name="Main">
+    <div className="absolute content-stretch flex flex-col items-start left-0 overflow-clip px-[115.4px] right-0 top-[395.8px]" data-name="Main">
       <ArticleSection />
     </div>
   );
@@ -2225,7 +2226,11 @@ function Container93() {
 
 function Link17() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[14px] uppercase whitespace-nowrap">
         <p className="leading-[24px]">HOME</p>
       </div>
@@ -2234,7 +2239,7 @@ function Link17() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2248,7 +2253,11 @@ function Item16() {
 
 function Link18() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[14px] uppercase whitespace-nowrap">
         <p className="leading-[24px]">SHOP</p>
       </div>
@@ -2257,7 +2266,7 @@ function Link18() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2271,7 +2280,11 @@ function Item17() {
 
 function Link19() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[14px] uppercase whitespace-nowrap">
         <p className="leading-[24px]">PRODUCT</p>
       </div>
@@ -2280,7 +2293,7 @@ function Link19() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2294,7 +2307,11 @@ function Item18() {
 
 function Link20() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[14px] uppercase whitespace-nowrap">
         <p className="leading-[24px]">BLOG</p>
       </div>
@@ -2303,7 +2320,7 @@ function Link20() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2364,10 +2381,10 @@ function Container109() {
 
 function Container() {
   return (
-    <div className="h-[2540.6px] relative shrink-0 w-full" data-name="Container">
+    <div className="h-[2371.6px] relative shrink-0 w-full" data-name="Container">
       <Masthead />
       <Main />
-      <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-[1967.6px]" data-name="Footer">
+      <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-[1798.6px]" data-name="Footer">
         <Section />
         <Section2 />
       </div>
@@ -2412,7 +2429,11 @@ function Container112() {
 
 function Background4() {
   return (
-    <div className="bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] sticky top-0" data-name="Background">
+    <div
+      className="fixed bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] bottom-[40px] right-[20px]"
+      data-name="Background"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
       <div className="absolute bottom-0 pointer-events-none right-0 rounded-[9999px] size-[46px]" data-name="Overlay+Shadow">
         <div aria-hidden="true" className="absolute bg-[rgba(255,255,255,0)] inset-0 rounded-[9999px]" />
         <div className="absolute inset-0 rounded-[inherit] shadow-[inset_0px_0px_0px_2px_rgba(34,34,34,0.2)]" />
@@ -2427,7 +2448,7 @@ export default function TrangThongTinTaiKhon() {
   return (
     <div className="bg-white content-stretch flex flex-col items-start relative size-full" data-name="Trang thông tin tài khoản">
       <Container />
-      <div className="absolute bottom-0 h-[2540.60009765625px] pointer-events-none right-[20px]">
+      <div className="absolute bottom-0 h-[2371.6px] pointer-events-none right-[20px]">
         <Background4 />
       </div>
     </div>

@@ -68,7 +68,7 @@ function Container1() {
 
 function Masthead() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 pb-[160px] pt-[160.8px] px-[100.4px] right-0 top-[169px]" data-name="masthead">
+    <div className="absolute content-stretch flex flex-col items-start left-0 pb-[160px] pt-[160.8px] px-[100.4px] right-0 top-0" data-name="masthead">
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div className="absolute bg-white inset-0" />
         <div className="absolute inset-0 overflow-hidden">
@@ -1242,7 +1242,7 @@ function Article() {
 
 function Main() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 overflow-clip pb-[88px] pt-[110px] px-[115.4px] right-0 top-[564.8px]" data-name="Main">
+    <div className="absolute content-stretch flex flex-col items-start left-0 overflow-clip pb-[88px] pt-[110px] px-[115.4px] right-0 top-[395.8px]" data-name="Main">
       <Article />
     </div>
   );
@@ -2866,10 +2866,10 @@ function Container134() {
 
 function Container() {
   return (
-    <div className="h-[2585px] relative shrink-0 w-full" data-name="Container">
+    <div className="h-[2416px] relative shrink-0 w-full" data-name="Container">
       <Masthead />
       <Main />
-      <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-[2012px]" data-name="Footer">
+      <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-[1843px]" data-name="Footer">
         <Section2 />
         <Section4 />
       </div>
@@ -2914,7 +2914,11 @@ function Container137() {
 
 function Background6() {
   return (
-    <div className="bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] sticky top-0" data-name="Background">
+    <div
+      className="fixed bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] bottom-[40px] right-[20px]"
+      data-name="Background"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
       <div className="absolute bottom-0 pointer-events-none right-0 rounded-[9999px] size-[46px]" data-name="Overlay+Shadow">
         <div aria-hidden="true" className="absolute bg-[rgba(255,255,255,0)] inset-0 rounded-[9999px]" />
         <div className="absolute inset-0 rounded-[inherit] shadow-[inset_0px_0px_0px_2px_rgba(34,34,34,0.2)]" />
@@ -2929,7 +2933,7 @@ export default function TrangLienH() {
   return (
     <div className="bg-white content-stretch flex flex-col items-start relative size-full" data-name="Trang liên hệ">
       <Container />
-      <div className="absolute bottom-0 h-[2585px] pointer-events-none right-[20px]">
+      <div className="absolute bottom-0 h-[2416px] pointer-events-none right-[20px]">
         <Background6 />
       </div>
     </div>

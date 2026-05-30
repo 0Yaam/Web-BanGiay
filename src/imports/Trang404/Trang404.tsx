@@ -592,7 +592,7 @@ function Section() {
 
 function Main() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 overflow-auto pb-[112px] pt-[100px] px-[115.4px] right-0 top-[169px]" data-name="Main">
+    <div className="absolute content-stretch flex flex-col items-start left-0 overflow-auto pb-[112px] pt-[100px] px-[115.4px] right-0 top-0" data-name="Main">
       <Section />
     </div>
   );
@@ -1857,7 +1857,7 @@ function Section3() {
 
 function Footer() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-[1318px]" data-name="Footer">
+    <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-[1149px]" data-name="Footer">
       <Section1 />
       <Section3 />
     </div>
@@ -2305,7 +2305,7 @@ function Header() {
 
 function Container() {
   return (
-    <div className="h-[1891px] relative shrink-0 w-full" data-name="Container">
+    <div className="h-[1722px] relative shrink-0 w-full" data-name="Container">
       <Main />
       <Footer />
       <Header />
@@ -2346,7 +2346,11 @@ function Container94() {
 
 function Background5() {
   return (
-    <div className="bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] sticky top-0" data-name="Background">
+    <div
+      className="fixed bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] bottom-[40px] right-[20px]"
+      data-name="Background"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
       <div className="absolute bottom-0 pointer-events-none right-0 rounded-[9999px] size-[46px]" data-name="Overlay+Shadow">
         <div aria-hidden="true" className="absolute bg-[rgba(255,255,255,0)] inset-0 rounded-[9999px]" />
         <div className="absolute inset-0 rounded-[inherit] shadow-[inset_0px_0px_0px_2px_rgba(34,34,34,0.2)]" />
@@ -2361,7 +2365,7 @@ export default function Trang() {
   return (
     <div className="bg-white content-stretch flex flex-col items-start relative size-full" data-name="Trang 404">
       <Container />
-      <div className="absolute bottom-0 h-[1891px] pointer-events-none right-[20px]">
+      <div className="absolute bottom-0 h-[1722px] pointer-events-none right-[20px]">
         <Background5 />
       </div>
     </div>

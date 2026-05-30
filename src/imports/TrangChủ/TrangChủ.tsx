@@ -1,3 +1,4 @@
+import { Link as RouterLink } from "react-router";
 import svgPaths from "./svg-w4udy0o29t";
 import imgRectangle from "./9bcd28711286f8b0a11eba35e487d427ec1d1d22.png";
 import imgRectangle1 from "./a3c910d3a4bc17e99c6a2952f94bf23c640b26ab.png";
@@ -110,9 +111,13 @@ function Container7() {
 
 function LinkWishlist() {
   return (
-    <div className="content-stretch flex items-center justify-center min-h-[46px] min-w-[46px] py-[13px] relative rounded-[46px] shrink-0" data-name="Link - wishlist">
+    <RouterLink
+      to="/account"
+      className="content-stretch flex items-center justify-center min-h-[46px] min-w-[46px] py-[13px] relative rounded-[46px] shrink-0"
+      data-name="Link - wishlist"
+    >
       <Container7 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -161,11 +166,15 @@ function Margin() {
 
 function Link() {
   return (
-    <div className="bg-[#eaeaea] content-stretch flex items-center justify-center relative rounded-[30px] shrink-0 size-[30px]" data-name="Link">
+    <RouterLink
+      to="/contact"
+      className="bg-[#eaeaea] content-stretch flex items-center justify-center relative rounded-[30px] shrink-0 size-[30px]"
+      data-name="Link"
+    >
       <div className="relative shrink-0 size-[17px]" data-name="image 2">
         <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImage2} />
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -179,11 +188,15 @@ function LinkMargin() {
 
 function Link1() {
   return (
-    <div className="bg-[#eaeaea] content-stretch flex items-center justify-center relative rounded-[30px] shrink-0 size-[30px]" data-name="Link">
+    <RouterLink
+      to="/contact"
+      className="bg-[#eaeaea] content-stretch flex items-center justify-center relative rounded-[30px] shrink-0 size-[30px]"
+      data-name="Link"
+    >
       <div className="relative shrink-0 size-[13px]" data-name="image 3">
         <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgImage3} />
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -197,7 +210,11 @@ function LinkMargin1() {
 
 function Link2() {
   return (
-    <div className="bg-[#eaeaea] content-stretch flex items-center justify-center relative rounded-[30px] shrink-0 size-[30px]" data-name="Link">
+    <RouterLink
+      to="/contact"
+      className="bg-[#eaeaea] content-stretch flex items-center justify-center relative rounded-[30px] shrink-0 size-[30px]"
+      data-name="Link"
+    >
       <div className="flex items-center justify-center relative shrink-0">
         <div className="-scale-y-100 flex-none">
           <div className="h-[15px] relative w-[14px]" data-name="image 4">
@@ -205,7 +222,7 @@ function Link2() {
           </div>
         </div>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -324,11 +341,15 @@ function Container23() {
 
 function Link3() {
   return (
-    <div className="bg-[#60ff00] content-stretch flex items-center justify-center px-[49px] py-[21px] relative rounded-[3px] shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="bg-[#60ff00] content-stretch flex items-center justify-center px-[49px] py-[21px] relative rounded-[3px] shrink-0"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[14px] text-black text-center uppercase whitespace-nowrap">
         <p className="leading-[14px]">BUY NOW</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -487,9 +508,13 @@ function Brand08Png() {
 
 function Link4() {
   return (
-    <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center overflow-clip relative shrink-0"
+      data-name="Link"
+    >
       <Brand08Png />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -521,9 +546,13 @@ function Brand07Png() {
 
 function Link5() {
   return (
-    <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center overflow-clip relative shrink-0"
+      data-name="Link"
+    >
       <Brand07Png />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -555,9 +584,13 @@ function Brand06Png() {
 
 function Link6() {
   return (
-    <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center overflow-clip relative shrink-0"
+      data-name="Link"
+    >
       <Brand06Png />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -589,9 +622,13 @@ function Brand04Png() {
 
 function Link7() {
   return (
-    <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center overflow-clip relative shrink-0"
+      data-name="Link"
+    >
       <Brand04Png />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -623,9 +660,13 @@ function Brand03Png() {
 
 function Link8() {
   return (
-    <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center overflow-clip relative shrink-0"
+      data-name="Link"
+    >
       <Brand03Png />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -691,9 +732,13 @@ function Brand09Png() {
 
 function Link9() {
   return (
-    <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center overflow-clip relative shrink-0"
+      data-name="Link"
+    >
       <Brand09Png />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -725,9 +770,13 @@ function Brand08Png1() {
 
 function Link10() {
   return (
-    <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center overflow-clip relative shrink-0"
+      data-name="Link"
+    >
       <Brand08Png1 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -759,9 +808,13 @@ function Brand07Png1() {
 
 function Link11() {
   return (
-    <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center overflow-clip relative shrink-0"
+      data-name="Link"
+    >
       <Brand07Png1 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -793,9 +846,13 @@ function Brand06Png1() {
 
 function Link12() {
   return (
-    <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center overflow-clip relative shrink-0"
+      data-name="Link"
+    >
       <Brand06Png1 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -827,9 +884,13 @@ function Brand04Png1() {
 
 function Link13() {
   return (
-    <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center overflow-clip relative shrink-0"
+      data-name="Link"
+    >
       <Brand04Png1 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -861,9 +922,13 @@ function Brand03Png1() {
 
 function Link14() {
   return (
-    <div className="content-stretch flex items-center justify-center overflow-clip relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center overflow-clip relative shrink-0"
+      data-name="Link"
+    >
       <Brand03Png1 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1280,12 +1345,16 @@ function Margin3() {
 
 function Link21() {
   return (
-    <div className="content-stretch flex items-center justify-center relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-center justify-center relative shrink-0"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[16px] text-black text-center uppercase whitespace-nowrap">
         <p className="leading-[24px]">SHOP WOMEN’S</p>
       </div>
       <Margin3 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1386,12 +1455,16 @@ function Margin4() {
 
 function Link22() {
   return (
-    <div className="content-stretch flex gap-[0.01px] items-center justify-center relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex gap-[0.01px] items-center justify-center relative shrink-0"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[16px] text-center text-white uppercase whitespace-nowrap">
         <p className="leading-[24px]">SHOP MEN’S</p>
       </div>
       <Margin4 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1525,10 +1598,14 @@ function SecondImageOfAirJordanDmp1Retro() {
 
 function Link23() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro />
       <SecondImageOfAirJordanDmp1Retro />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1553,11 +1630,15 @@ function Container103() {
 
 function Link24() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">Calvin Klein Jeans</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1654,10 +1735,14 @@ function SecondImageOfAirJordanDmp1Retro1() {
 
 function Link25() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro1 />
       <SecondImageOfAirJordanDmp1Retro1 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1682,11 +1767,15 @@ function Container110() {
 
 function Link26() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">Converse Run Star Motion</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1783,10 +1872,14 @@ function SecondImageOfAirJordanDmp1Retro2() {
 
 function Link27() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro2 />
       <SecondImageOfAirJordanDmp1Retro2 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1811,11 +1904,15 @@ function Container117() {
 
 function Link28() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">{`Canvas Men's Sneakers`}</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1912,10 +2009,14 @@ function SecondImageOfAirJordanDmp1Retro3() {
 
 function Link29() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <AirJordanDmp1Retro3 />
       <SecondImageOfAirJordanDmp1Retro3 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1940,11 +2041,15 @@ function Container124() {
 
 function Link30() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] w-full">
         <p className="leading-[21px]">Jordan Luka 1 Basketball</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2078,9 +2183,13 @@ function Container131() {
 
 function Link31() {
   return (
-    <div className="bg-[#f2f2f2] content-stretch flex items-start px-[55px] py-[18px] relative rounded-[3px] shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="bg-[#f2f2f2] content-stretch flex items-start px-[55px] py-[18px] relative rounded-[3px] shrink-0"
+      data-name="Link"
+    >
       <Container131 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2129,9 +2238,13 @@ function Banner2() {
 
 function Link32() {
   return (
-    <div className="content-stretch flex items-start justify-center relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-start justify-center relative shrink-0"
+      data-name="Link"
+    >
       <Banner2 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2175,11 +2288,15 @@ function Container138() {
 
 function Link33() {
   return (
-    <div className="bg-black content-stretch flex items-center justify-center px-[45px] py-[15px] relative rounded-[3px] shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="bg-black content-stretch flex items-center justify-center px-[45px] py-[15px] relative rounded-[3px] shrink-0"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[14px] text-center text-white uppercase whitespace-nowrap">
         <p className="leading-[24px]">SHOP NOW</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2261,11 +2378,15 @@ function Container144() {
 
 function Link34() {
   return (
-    <div className="bg-black content-stretch flex items-center justify-center px-[45px] py-[15px] relative rounded-[3px] shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="bg-black content-stretch flex items-center justify-center px-[45px] py-[15px] relative rounded-[3px] shrink-0"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[14px] text-center text-white uppercase whitespace-nowrap">
         <p className="leading-[24px]">SHOP NOW</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2303,9 +2424,13 @@ function Banner3() {
 
 function Link35() {
   return (
-    <div className="content-stretch flex items-start justify-center relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex items-start justify-center relative shrink-0"
+      data-name="Link"
+    >
       <Banner3 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2374,10 +2499,14 @@ function SecondImageOfNikeAirMax89Es() {
 
 function Link36() {
   return (
-    <div className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-start overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <NikeAirMax89Es />
       <SecondImageOfNikeAirMax89Es />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2421,11 +2550,15 @@ function Container154() {
 
 function Link37() {
   return (
-    <div className="content-stretch flex flex-col items-center overflow-clip relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/product/1"
+      className="content-stretch flex flex-col items-center overflow-clip relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#222] text-[14px] text-center whitespace-nowrap">
         <p className="leading-[21px]">Nike Air Max 89 ES</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2798,11 +2931,15 @@ function Container187() {
 
 function Link5SweetOutfitIdeasYoullWearWellBeyondValentinesDay() {
   return (
-    <div className="aspect-[410/390] min-h-[390px] relative shrink-0 w-full" data-name="Link → 5 Sweet Outfit Ideas You’ll Wear Well Beyond Valentine’s Day">
+    <RouterLink
+      to="/info"
+      className="aspect-[410/390] min-h-[390px] relative shrink-0 w-full"
+      data-name="Link → 5 Sweet Outfit Ideas You’ll Wear Well Beyond Valentine’s Day"
+    >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <img alt="" className="absolute h-full left-[-23.47%] max-w-none top-0 w-[146.93%]" src={imgLink5SweetOutfitIdeasYoullWearWellBeyondValentinesDay} />
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2896,9 +3033,13 @@ function Container201() {
 
 function Link38() {
   return (
-    <div className="content-stretch flex flex-col items-start pb-[7.2px] relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-col items-start pb-[7.2px] relative shrink-0 w-full"
+      data-name="Link"
+    >
       <Container201 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2938,14 +3079,18 @@ function Container203() {
 
 function Link39() {
   return (
-    <div className="relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex gap-[0.01px] isolate items-center pr-[28px] pt-[16px] relative size-full">
           <Margin10 />
           <Container203 />
         </div>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2997,11 +3142,15 @@ function Container190() {
 
 function Link12MustHaveShoesEveryFashionLoverNeedsInTheirCloset() {
   return (
-    <div className="aspect-[410/390] min-h-[390px] relative shrink-0 w-full" data-name="Link → 12 Must-Have Shoes Every Fashion Lover Needs in Their Closet">
+    <RouterLink
+      to="/info"
+      className="aspect-[410/390] min-h-[390px] relative shrink-0 w-full"
+      data-name="Link → 12 Must-Have Shoes Every Fashion Lover Needs in Their Closet"
+    >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <img alt="" className="absolute h-full left-[-23.47%] max-w-none top-0 w-[146.93%]" src={imgLink12MustHaveShoesEveryFashionLoverNeedsInTheirCloset} />
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3095,9 +3244,13 @@ function Container215() {
 
 function Link40() {
   return (
-    <div className="content-stretch flex flex-col items-start pb-[7.2px] relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-col items-start pb-[7.2px] relative shrink-0 w-full"
+      data-name="Link"
+    >
       <Container215 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3137,14 +3290,18 @@ function Container217() {
 
 function Link41() {
   return (
-    <div className="relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex gap-[0.01px] isolate items-center pr-[28px] pt-[16px] relative size-full">
           <Margin11 />
           <Container217 />
         </div>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3196,11 +3353,15 @@ function Container204() {
 
 function LinkThisScandiInfluencersShoeCollaborationIsTheGiftThatKeepsOnGiving() {
   return (
-    <div className="aspect-[410/390] min-h-[390px] relative shrink-0 w-full" data-name="Link → This Scandi Influencer’s Shoe Collaboration Is The Gift That Keeps On Giving">
+    <RouterLink
+      to="/info"
+      className="aspect-[410/390] min-h-[390px] relative shrink-0 w-full"
+      data-name="Link → This Scandi Influencer’s Shoe Collaboration Is The Gift That Keeps On Giving"
+    >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <img alt="" className="absolute h-full left-[-23.47%] max-w-none top-0 w-[146.93%]" src={imgLinkThisScandiInfluencersShoeCollaborationIsTheGiftThatKeepsOnGiving} />
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3294,9 +3455,13 @@ function Container229() {
 
 function Link42() {
   return (
-    <div className="content-stretch flex flex-col items-start pb-[7.2px] relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-col items-start pb-[7.2px] relative shrink-0 w-full"
+      data-name="Link"
+    >
       <Container229 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3336,14 +3501,18 @@ function Container231() {
 
 function Link43() {
   return (
-    <div className="relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex gap-[0.01px] isolate items-center pr-[28px] pt-[16px] relative size-full">
           <Margin12 />
           <Container231 />
         </div>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3395,11 +3564,15 @@ function Container218() {
 
 function LinkHowToBeGoodWithMoneyAccordingTo4FemaleFinancialExperts() {
   return (
-    <div className="aspect-[410/390] min-h-[390px] relative shrink-0 w-full" data-name="Link → How To Be “Good With Money” According To 4 Female Financial Experts">
+    <RouterLink
+      to="/info"
+      className="aspect-[410/390] min-h-[390px] relative shrink-0 w-full"
+      data-name="Link → How To Be “Good With Money” According To 4 Female Financial Experts"
+    >
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <img alt="" className="absolute h-full left-[-23.47%] max-w-none top-0 w-[146.93%]" src={imgLinkHowToBeGoodWithMoneyAccordingTo4FemaleFinancialExperts} />
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3473,9 +3646,13 @@ function Container242() {
 
 function Link44() {
   return (
-    <div className="content-stretch flex flex-col items-start pb-[7.2px] relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-col items-start pb-[7.2px] relative shrink-0 w-full"
+      data-name="Link"
+    >
       <Container242 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -3507,14 +3684,18 @@ function Container244() {
 
 function Link45() {
   return (
-    <div className="relative shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="relative shrink-0 w-full"
+      data-name="Link"
+    >
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex gap-[0.01px] isolate items-center pr-[28px] pt-[16px] relative size-full">
           <Margin13 />
           <Container244 />
         </div>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4216,11 +4397,15 @@ function Margin18() {
 
 function Link46() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Help Center</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4234,11 +4419,15 @@ function Item() {
 
 function Link47() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Shipping Info</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4252,11 +4441,15 @@ function Item1() {
 
 function Link48() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Returns</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4270,11 +4463,15 @@ function Item2() {
 
 function Link49() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">How To Order</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4288,11 +4485,15 @@ function Item3() {
 
 function Link50() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">How To Track</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4306,11 +4507,15 @@ function Item4() {
 
 function Link51() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Size Guide</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4392,11 +4597,15 @@ function Margin19() {
 
 function Link52() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">About Us</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4410,11 +4619,15 @@ function Item6() {
 
 function Link53() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Our Blog</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4428,11 +4641,15 @@ function Item7() {
 
 function Link54() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Careers</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4446,11 +4663,15 @@ function Item8() {
 
 function Link55() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Store Locations</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4464,11 +4685,15 @@ function Item9() {
 
 function Link56() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Testimonial</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4482,11 +4707,15 @@ function Item10() {
 
 function Link57() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-w-px relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-white w-full">
         <p className="leading-[21px]">Sitemap</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4674,9 +4903,13 @@ function Container298() {
 
 function ListitemLink() {
   return (
-    <div className="content-stretch flex items-center justify-center relative shrink-0 size-[28px]" data-name="Listitem → Link">
+    <RouterLink
+      to="/contact"
+      className="content-stretch flex items-center justify-center relative shrink-0 size-[28px]"
+      data-name="Listitem → Link"
+    >
       <Container298 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4704,9 +4937,13 @@ function Container300() {
 
 function ListitemLink1() {
   return (
-    <div className="content-stretch flex items-center justify-center relative shrink-0 size-[28px]" data-name="Listitem → Link">
+    <RouterLink
+      to="/contact"
+      className="content-stretch flex items-center justify-center relative shrink-0 size-[28px]"
+      data-name="Listitem → Link"
+    >
       <Container300 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4732,9 +4969,13 @@ function Container302() {
 
 function ListitemLink2() {
   return (
-    <div className="content-stretch flex items-center justify-center pl-[6.12px] pr-[7px] relative shrink-0 size-[28px]" data-name="Listitem → Link">
+    <RouterLink
+      to="/contact"
+      className="content-stretch flex items-center justify-center pl-[6.12px] pr-[7px] relative shrink-0 size-[28px]"
+      data-name="Listitem → Link"
+    >
       <Container302 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4760,9 +5001,13 @@ function Container304() {
 
 function ListitemLink3() {
   return (
-    <div className="content-stretch flex items-center justify-center pl-[6.12px] pr-[7px] relative shrink-0 size-[28px]" data-name="Listitem → Link">
+    <RouterLink
+      to="/contact"
+      className="content-stretch flex items-center justify-center pl-[6.12px] pr-[7px] relative shrink-0 size-[28px]"
+      data-name="Listitem → Link"
+    >
       <Container304 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -4788,9 +5033,13 @@ function Container306() {
 
 function ListitemLink4() {
   return (
-    <div className="content-stretch flex items-center justify-center relative shrink-0 size-[28px]" data-name="Listitem → Link">
+    <RouterLink
+      to="/contact"
+      className="content-stretch flex items-center justify-center relative shrink-0 size-[28px]"
+      data-name="Listitem → Link"
+    >
       <Container306 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -5209,7 +5458,11 @@ function Container265() {
 
 function Link58() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[12px] text-black uppercase whitespace-nowrap">
         <p className="leading-[24px]">HOME</p>
       </div>
@@ -5218,7 +5471,7 @@ function Link58() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, black)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -5232,7 +5485,11 @@ function Item12() {
 
 function Link59() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[12px] uppercase whitespace-nowrap">
         <p className="leading-[24px]">SHOP</p>
       </div>
@@ -5241,7 +5498,7 @@ function Link59() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -5255,16 +5512,20 @@ function Item13() {
 
 function Link60() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[13.99px] relative" data-name="Link">
+    <RouterLink
+      to="/contact"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[13.99px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[12px] uppercase whitespace-nowrap">
-        <p className="leading-[24px]">PRODUCT</p>
+        <p className="leading-[24px]">CONTACT</p>
       </div>
       <div className="absolute h-[2.997px] left-[55.18px] top-[10.63px] w-[6px]" data-name="Symbol">
         <svg className="absolute block inset-0 size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 6 2.9973">
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -5278,7 +5539,11 @@ function Item14() {
 
 function Link61() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/info"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[12px] uppercase whitespace-nowrap">
         <p className="leading-[24px]">BLOG</p>
       </div>
@@ -5287,7 +5552,7 @@ function Link61() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -5354,9 +5619,13 @@ function Logo() {
 
 function Link62() {
   return (
-    <div className="content-stretch flex flex-col items-start relative shrink-0" data-name="Link">
+    <RouterLink
+      to="/"
+      className="content-stretch flex flex-col items-start relative shrink-0"
+      data-name="Link"
+    >
       <Logo />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -5536,7 +5805,11 @@ function Container344() {
 
 function Background12() {
   return (
-    <button className="bg-white content-stretch cursor-pointer flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] sticky top-0" data-name="Background">
+    <button
+      className="fixed bg-white content-stretch cursor-pointer flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] bottom-[40px] right-[20px]"
+      data-name="Background"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
       <div className="absolute bottom-0 pointer-events-none right-0 rounded-[9999px] size-[46px]" data-name="Overlay+Shadow">
         <div aria-hidden="true" className="absolute bg-[rgba(255,255,255,0)] inset-0 rounded-[9999px]" />
         <div className="absolute inset-0 rounded-[inherit] shadow-[inset_0px_0px_0px_2px_rgba(34,34,34,0.2)]" />

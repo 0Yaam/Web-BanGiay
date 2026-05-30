@@ -4,7 +4,6 @@ import { useLocation } from "react-router";
 import CartSidebar from "./CartSidebar";
 import SidebarNav from "./SidebarNav";
 import Navigation from "./Navigation";
-import MateFooter from "./MateFooter";
 import { useCart } from "../context/CartContext";
 
 interface LayoutProps {
@@ -20,12 +19,13 @@ export default function Layout({ children }: LayoutProps) {
     <div className="min-h-screen bg-white">
       {!isHome && <Navigation />}
       {isHome && <SidebarNav />}
-      <main className={isHome ? "home-shell" : "non-home-page"}>
+      <main
+        className={isHome ? "home-page" : "non-home-page"}
+        style={{ marginRight: isHome ? "100px" : "0" }}
+      >
         {children}
       </main>
-      {!isHome ? <MateFooter /> : null}
       <CartSidebar isOpen={isCartOpen} onClose={closeCart} />
     </div>
   );
 }
-

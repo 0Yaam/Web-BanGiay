@@ -1,57 +1,51 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { getProductById } from "../data/products";
 
-import { parseCurrency, Product, products } from "../data/shopData";
-
-const CART_STORAGE_KEY = "mate-shoes-cart";
-
-export type CartItem = {
+export type CartLine = {
   id: string;
-  productId: number;
-  size: string;
-  color: string;
+  productId: string;
   quantity: number;
-};
-
-export type DetailedCartItem = CartItem & {
-  product: Product;
-  lineTotal: number;
-};
-
-type AddItemOptions = {
   size?: string;
-  color?: string;
-  quantity?: number;
 };
+
+function createLineId(productId: string, size?: string) {
+  return `${productId}::${size ?? ""}`;
+}
 
 interface CartContextType {
   isCartOpen: boolean;
-  items: CartItem[];
-  detailedItems: DetailedCartItem[];
-  subtotal: number;
-  totalItems: number;
-  addItem: (product: Product, options?: AddItemOptions) => void;
-  removeItem: (itemId: string) => void;
-  updateQuantity: (itemId: string, quantity: number) => void;
-  clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
+  items: CartLine[];
+  addItem: (productId: string, quantity?: number, size?: string) => void;
+  removeItem: (lineId: string) => void;
+  updateQuantity: (lineId: string, quantity: number) => void;
+  clearCart: () => void;
+  itemCount: number;
+  subtotal: number;
 }
+
+const STORAGE_KEY = "shop-cart";
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-function getCartItemId(productId: number, size: string, color: string) {
-  return `${productId}-${size}-${color}`;
-}
-
-function readStoredCart(): CartItem[] {
-  if (typeof window === "undefined") return [];
-
+function readStoredItems(): CartLine[] {
   try {
-    const storedCart = window.localStorage.getItem(CART_STORAGE_KEY);
-    if (!storedCart) return [];
-    const parsedCart = JSON.parse(storedCart);
-    return Array.isArray(parsedCart) ? parsedCart : [];
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return [];
+    }
+    const parsed = JSON.parse(raw) as CartLine[];
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
@@ -59,96 +53,73 @@ function readStoredCart(): CartItem[] {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [items, setItems] = useState<CartItem[]>(readStoredCart);
+  const [items, setItems] = useState<CartLine[]>(readStoredItems);
 
   useEffect(() => {
-    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   }, [items]);
 
-  const detailedItems = useMemo(
-    () =>
-      items
-        .map(item => {
-          const product = products.find(productItem => productItem.id === item.productId);
-          if (!product) return null;
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
+  const toggleCart = () => setIsCartOpen((prev) => !prev);
 
-          return {
-            ...item,
-            product,
-            lineTotal: parseCurrency(product.price) * item.quantity,
-          };
-        })
-        .filter((item): item is DetailedCartItem => item !== null),
+  const addItem = useCallback((productId: string, quantity = 1, size?: string) => {
+    const id = createLineId(productId, size);
+    setItems((prev) => {
+      const existing = prev.find((line) => line.id === id);
+      if (existing) {
+        return prev.map((line) =>
+          line.id === id ? { ...line, quantity: line.quantity + quantity } : line,
+        );
+      }
+      return [...prev, { id, productId, quantity, size }];
+    });
+  }, []);
+
+  const removeItem = useCallback((lineId: string) => {
+    setItems((prev) => prev.filter((line) => line.id !== lineId));
+  }, []);
+
+  const updateQuantity = useCallback((lineId: string, quantity: number) => {
+    if (quantity < 1) {
+      setItems((prev) => prev.filter((line) => line.id !== lineId));
+      return;
+    }
+    setItems((prev) =>
+      prev.map((line) => (line.id === lineId ? { ...line, quantity } : line)),
+    );
+  }, []);
+
+  const clearCart = useCallback(() => setItems([]), []);
+
+  const itemCount = useMemo(
+    () => items.reduce((sum, line) => sum + line.quantity, 0),
     [items],
   );
 
   const subtotal = useMemo(
-    () => detailedItems.reduce((total, item) => total + item.lineTotal, 0),
-    [detailedItems],
-  );
-
-  const totalItems = useMemo(
-    () => items.reduce((total, item) => total + item.quantity, 0),
+    () =>
+      items.reduce((sum, line) => {
+        const product = getProductById(line.productId);
+        return sum + (product.price ?? 0) * line.quantity;
+      }, 0),
     [items],
   );
-
-  const addItem = (product: Product, options: AddItemOptions = {}) => {
-    const size = options.size ?? product.sizes[0] ?? "One size";
-    const color = options.color ?? product.colors[0] ?? "Default";
-    const quantity = Math.max(1, options.quantity ?? 1);
-    const id = getCartItemId(product.id, size, color);
-
-    setItems(currentItems => {
-      const existingItem = currentItems.find(item => item.id === id);
-      if (!existingItem) {
-        return [...currentItems, { id, productId: product.id, size, color, quantity }];
-      }
-
-      return currentItems.map(item =>
-        item.id === id ? { ...item, quantity: item.quantity + quantity } : item,
-      );
-    });
-  };
-
-  const removeItem = (itemId: string) => {
-    setItems(currentItems => currentItems.filter(item => item.id !== itemId));
-  };
-
-  const updateQuantity = (itemId: string, quantity: number) => {
-    const nextQuantity = Math.max(0, quantity);
-    if (nextQuantity === 0) {
-      removeItem(itemId);
-      return;
-    }
-
-    setItems(currentItems =>
-      currentItems.map(item =>
-        item.id === itemId ? { ...item, quantity: nextQuantity } : item,
-      ),
-    );
-  };
-
-  const clearCart = () => setItems([]);
-
-  const openCart = () => setIsCartOpen(true);
-  const closeCart = () => setIsCartOpen(false);
-  const toggleCart = () => setIsCartOpen(prev => !prev);
 
   return (
     <CartContext.Provider
       value={{
         isCartOpen,
+        openCart,
+        closeCart,
+        toggleCart,
         items,
-        detailedItems,
-        subtotal,
-        totalItems,
         addItem,
         removeItem,
         updateQuantity,
         clearCart,
-        openCart,
-        closeCart,
-        toggleCart,
+        itemCount,
+        subtotal,
       }}
     >
       {children}

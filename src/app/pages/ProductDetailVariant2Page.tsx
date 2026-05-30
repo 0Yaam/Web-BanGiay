@@ -1,3 +1,5 @@
-import ProductDetailPage from "./ProductDetailPage";
+import TrangSảnPhẩm43442 from "../../imports/TrangSảnPhẩm-1-1/TrangSảnPhẩm-4-3442";
 
-export default ProductDetailPage;
+export default function ProductDetailVariant2Page() {
+  return <TrangSảnPhẩm43442 />;
+}

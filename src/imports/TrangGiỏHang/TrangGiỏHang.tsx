@@ -1,3 +1,7 @@
+import { Link as RouterLink } from "react-router";
+import CartItemsList from "../../app/components/CartItemsList";
+import { useCart } from "../../app/context/CartContext";
+import { formatPrice } from "../../app/data/products";
 import svgPaths from "./svg-iyzs9d48al";
 import imgMasthead from "./7e50743c804ee3c01b7423cd7410540d607630a7.png";
 import imgAirJordanDmp1Retro from "./ced45ff080640e6fa3c232833c112c2d0cd2200c.png";
@@ -22,7 +26,9 @@ function Paragraph() {
     <div className="h-[16px] relative shrink-0 w-full" data-name="Paragraph">
       <div className="-translate-x-1/2 -translate-y-1/2 absolute capitalize flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] left-[calc(50%-22px)] text-[#222] text-[12px] text-center top-[8px] whitespace-nowrap">
         <p>
-          <span className="leading-[16px]">Home</span>
+          <RouterLink to="/" className="leading-[16px] hover:text-[#0db22a] transition-colors">
+            Home
+          </RouterLink>
           <span className="font-['Jost:Regular',sans-serif] font-normal leading-[16px]">{` `}</span>
         </p>
       </div>
@@ -51,7 +57,7 @@ function Container1() {
 
 function Masthead() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 pb-[160px] pt-[160.8px] px-[100.4px] right-0 top-[169px]" data-name="masthead">
+    <div className="relative flex flex-col items-start w-full pb-[160px] pt-[160.8px] px-[100.4px] shrink-0" data-name="masthead">
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div className="absolute bg-white inset-0" />
         <div className="absolute inset-0 overflow-hidden">
@@ -64,14 +70,30 @@ function Masthead() {
   );
 }
 
+const FREE_SHIPPING_THRESHOLD = 200;
+
 function Paragraph1() {
+  const { subtotal } = useCart();
+  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+  const remainingLabel = formatPrice(remaining) ?? "$0.00";
+
+  if (subtotal >= FREE_SHIPPING_THRESHOLD) {
+    return (
+      <div className="content-stretch flex items-start leading-[0] pb-[12.4px] pt-[37.2px] relative shrink-0 text-[#505157] text-[13px] w-full whitespace-nowrap" data-name="Paragraph">
+        <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center relative shrink-0">
+          <p className="leading-[24px] text-[#0db22a]">Bạn đã được miễn phí vận chuyển!</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="content-stretch flex items-start leading-[0] pb-[12.4px] pt-[37.2px] relative shrink-0 text-[#505157] text-[13px] w-full whitespace-nowrap" data-name="Paragraph">
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center relative shrink-0">
         <p className="leading-[24px]">{`Buy `}</p>
       </div>
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center relative shrink-0">
-        <p className="leading-[24px]">$26.00</p>
+        <p className="leading-[24px]">{remainingLabel}</p>
       </div>
       <div className="flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center relative shrink-0">
         <p>
@@ -614,20 +636,6 @@ function Background2() {
   );
 }
 
-function BackgroundBorder() {
-  return (
-    <div className="bg-[#f2f2f2] relative rounded-[16px] shrink-0 w-full" data-name="Background+Border">
-      <div className="overflow-clip rounded-[inherit] size-full">
-        <div className="content-stretch flex flex-col items-start pb-[13.6px] pt-[1.6px] px-[1.6px] relative size-full">
-          <Container8 />
-          <Background2 />
-        </div>
-      </div>
-      <div aria-hidden="true" className="absolute border border-[#f2f2f2] border-solid inset-0 pointer-events-none rounded-[16px]" />
-    </div>
-  );
-}
-
 function Container39() {
   return (
     <div className="relative shrink-0" data-name="Container">
@@ -720,8 +728,7 @@ function Container37() {
 function Form() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Form">
-      <Container5 />
-      <BackgroundBorder />
+      <CartItemsList />
       <Container37 />
     </div>
   );
@@ -729,7 +736,7 @@ function Form() {
 
 function Container4() {
   return (
-    <div className="col-[1/span_2] content-stretch flex flex-col items-start justify-self-stretch pb-[12px] relative row-1 self-start shrink-0" data-name="Container">
+    <div className="content-stretch flex flex-col items-stretch justify-self-stretch pb-[12px] relative w-full min-w-0 overflow-hidden" data-name="Container">
       <Form />
     </div>
   );
@@ -762,11 +769,14 @@ function Container42() {
 }
 
 function Container43() {
+  const { subtotal } = useCart();
+  const subtotalLabel = formatPrice(subtotal) ?? "$0.00";
+
   return (
     <div className="relative shrink-0" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-center relative size-full">
         <div className="flex flex-col font-['Jost:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#505157] text-[14px] text-center whitespace-nowrap">
-          <p className="leading-[24px]">$174.00</p>
+          <p className="leading-[24px]">{subtotalLabel}</p>
         </div>
       </div>
     </div>
@@ -956,11 +966,17 @@ function Container55() {
   );
 }
 
+const SHIPPING_FLAT_RATE = 20;
+
 function Container56() {
+  const { subtotal } = useCart();
+  const total = subtotal + SHIPPING_FLAT_RATE;
+  const totalLabel = formatPrice(total) ?? "$0.00";
+
   return (
     <div className="content-stretch flex flex-col items-center relative shrink-0" data-name="Container">
       <div className="flex flex-col font-['Jost:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#0db22a] text-[20px] text-center whitespace-nowrap">
-        <p className="leading-[28px]">$194.00</p>
+        <p className="leading-[28px]">{totalLabel}</p>
       </div>
     </div>
   );
@@ -991,9 +1007,13 @@ function Container57() {
 
 function Link3() {
   return (
-    <div className="bg-black content-stretch flex h-[56px] items-center justify-center relative rounded-[4px] shrink-0 w-full" data-name="Link">
+    <RouterLink
+      to="/checkout"
+      className="bg-black content-stretch flex h-[56px] items-center justify-center relative rounded-[4px] shrink-0 w-full"
+      data-name="Link"
+    >
       <Container57 />
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1024,7 +1044,7 @@ function Border2() {
 
 function Container41() {
   return (
-    <div className="col-3 content-stretch flex flex-col items-start justify-self-stretch pb-[62.45px] relative row-1 self-start shrink-0" data-name="Container">
+    <div className="content-stretch flex flex-col items-start justify-self-stretch pb-[62.45px] relative w-full xl:sticky xl:top-[24px]" data-name="Container">
       <Border2 />
     </div>
   );
@@ -1032,7 +1052,7 @@ function Container41() {
 
 function Container3() {
   return (
-    <div className="gap-x-[30px] gap-y-[30px] grid grid-cols-[repeat(3,minmax(0,1fr))] grid-rows-[__681.85px_12px] relative shrink-0 w-full" data-name="Container">
+    <div className="gap-x-[30px] gap-y-[30px] grid grid-cols-1 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] items-start relative w-full" data-name="Container">
       <Container4 />
       <Container41 />
     </div>
@@ -1049,7 +1069,7 @@ function Container2() {
 
 function ArticleSection() {
   return (
-    <div className="content-stretch flex h-[723.85px] items-start justify-center relative shrink-0 w-full" data-name="Article → Section">
+    <div className="flex w-full items-start justify-center relative" data-name="Article → Section">
       <Container2 />
     </div>
   );
@@ -1057,7 +1077,7 @@ function ArticleSection() {
 
 function Main() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 overflow-clip px-[115.4px] py-[120px] right-0 top-[564.8px]" data-name="Main">
+    <div className="relative flex flex-col items-start w-full max-w-[1320px] mx-auto px-[15px] sm:px-[30px] lg:px-[100px] py-[48px] lg:py-[80px]" data-name="Main">
       <ArticleSection />
     </div>
   );
@@ -2541,7 +2561,11 @@ function Container123() {
 
 function Link17() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[14px] uppercase whitespace-nowrap">
         <p className="leading-[24px]">HOME</p>
       </div>
@@ -2550,7 +2574,7 @@ function Link17() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2564,7 +2588,11 @@ function Item12() {
 
 function Link18() {
   return (
-    <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative" data-name="Link">
+    <RouterLink
+      to="/products"
+      className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px pr-[14px] relative"
+      data-name="Link"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[#909090] text-[14px] uppercase whitespace-nowrap">
         <p className="leading-[24px]">SHOP</p>
       </div>
@@ -2573,7 +2601,7 @@ function Link18() {
           <path d={svgPaths.p3d2f8a40} fill="var(--fill-0, #909090)" id="Symbol" />
         </svg>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -2680,14 +2708,14 @@ function Container139() {
 
 function Container() {
   return (
-    <div className="h-[2113.65px] relative shrink-0 w-full" data-name="Container">
+    <div className="relative flex flex-col w-full" data-name="Container">
       <Masthead />
       <Main />
-      <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-[1540.65px]" data-name="Footer">
+      <div className="relative flex flex-col items-stretch w-full mt-0" data-name="Footer">
         <Section />
         <Section2 />
       </div>
-      <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-0" data-name="Header">
+      <div className="absolute content-stretch flex flex-col items-start left-0 right-0 top-0 pointer-events-none" data-name="Header">
         <Container123 />
         <Container139 />
       </div>
@@ -2728,7 +2756,11 @@ function Container142() {
 
 function Background11() {
   return (
-    <div className="bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] sticky top-0" data-name="Background">
+    <div
+      className="fixed bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] bottom-[40px] right-[20px]"
+      data-name="Background"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
       <div className="absolute bottom-0 pointer-events-none right-0 rounded-[9999px] size-[46px]" data-name="Overlay+Shadow">
         <div aria-hidden="true" className="absolute bg-[rgba(255,255,255,0)] inset-0 rounded-[9999px]" />
         <div className="absolute inset-0 rounded-[inherit] shadow-[inset_0px_0px_0px_2px_rgba(34,34,34,0.2)]" />
@@ -2741,11 +2773,9 @@ function Background11() {
 
 export default function TrangGiHang() {
   return (
-    <div className="bg-white content-stretch flex flex-col items-start relative size-full" data-name="Trang giỏ hàng">
+    <div className="bg-white flex flex-col items-stretch relative w-full min-h-0" data-name="Trang giỏ hàng">
       <Container />
-      <div className="absolute bottom-0 h-[2113.64990234375px] pointer-events-none right-[20px]">
-        <Background11 />
-      </div>
+      <Background11 />
     </div>
   );
 }

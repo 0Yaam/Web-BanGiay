@@ -292,7 +292,7 @@ function ProductImage271Jpg() {
 
 function Link() {
   return (
-    <div className="content-stretch flex h-full items-start justify-center overflow-clip relative shrink-0 w-full" data-name="Link">
+    <div className="content-stretch flex items-start justify-center overflow-clip relative shrink-0 w-full" data-name="Link">
       <ProductImage5 />
       <ProductImage271Jpg />
     </div>
@@ -3588,7 +3588,11 @@ function Container191() {
 
 function Background1() {
   return (
-    <div className="bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] sticky top-0" data-name="Background">
+    <div
+      className="fixed bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] bottom-[40px] right-[20px]"
+      data-name="Background"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
       <div className="absolute bottom-0 pointer-events-none right-0 rounded-[9999px] size-[46px]" data-name="Overlay+Shadow">
         <div aria-hidden="true" className="absolute bg-[rgba(255,255,255,0)] inset-0 rounded-[9999px]" />
         <div className="absolute inset-0 rounded-[inherit] shadow-[inset_0px_0px_0px_2px_rgba(34,34,34,0.2)]" />

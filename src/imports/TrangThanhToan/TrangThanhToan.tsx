@@ -1,3 +1,4 @@
+import { Link as RouterLink } from "react-router";
 import svgPaths from "./svg-1tsb7p0bx9";
 import imgMasthead from "./7e50743c804ee3c01b7423cd7410540d607630a7.png";
 import imgImageContact1Png from "./5c4ed1fb8eba4060c9be504390dcc8ba5484b36a.png";
@@ -20,7 +21,9 @@ function Paragraph() {
     <div className="h-[16px] relative shrink-0 w-full" data-name="Paragraph">
       <div className="-translate-x-1/2 -translate-y-1/2 absolute capitalize flex flex-col font-['Jost:Regular',sans-serif] font-normal justify-center leading-[0] left-[calc(50%-35.14px)] text-[#222] text-[12px] text-center top-[8px] whitespace-nowrap">
         <p>
-          <span className="leading-[16px]">Home</span>
+          <RouterLink to="/" className="leading-[16px] hover:text-[#0db22a] transition-colors">
+            Home
+          </RouterLink>
           <span className="font-['Jost:Regular',sans-serif] font-normal leading-[16px]">{` `}</span>
         </p>
       </div>
@@ -49,7 +52,7 @@ function Container1() {
 
 function Masthead() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 pb-[160px] pt-[160.8px] px-[100.4px] right-0 top-[169px]" data-name="masthead">
+    <div className="absolute content-stretch flex flex-col items-start left-0 pb-[160px] pt-[160.8px] px-[100.4px] right-0 top-0" data-name="masthead">
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div className="absolute bg-white inset-0" />
         <div className="absolute inset-0 overflow-hidden">
@@ -1032,11 +1035,15 @@ function Container57() {
 
 function Button() {
   return (
-    <div className="bg-black content-stretch flex h-[56px] items-center justify-center relative rounded-[4px] shrink-0 w-full" data-name="Button">
+    <RouterLink
+      to="/checkout/success"
+      className="bg-black content-stretch flex h-[56px] items-center justify-center relative rounded-[4px] shrink-0 w-full"
+      data-name="Button"
+    >
       <div className="flex flex-col font-['Oswald:Bold',sans-serif] font-bold justify-center leading-[0] relative shrink-0 text-[14px] text-center text-white uppercase whitespace-nowrap">
         <p className="leading-[24px]">PLACE ORDER</p>
       </div>
-    </div>
+    </RouterLink>
   );
 }
 
@@ -1117,7 +1124,7 @@ function Article() {
 
 function Main() {
   return (
-    <div className="absolute content-stretch flex flex-col items-start left-0 overflow-clip pb-[90px] px-[115.4px] right-0 top-[564.8px]" data-name="Main">
+    <div className="absolute content-stretch flex flex-col items-start left-0 overflow-clip pb-[90px] px-[115.4px] right-0 top-[395.8px]" data-name="Main">
       <Article />
     </div>
   );
@@ -2788,7 +2795,11 @@ function Container144() {
 
 function Background6() {
   return (
-    <div className="bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] sticky top-0" data-name="Background">
+    <div
+      className="fixed bg-white content-stretch flex items-center justify-center p-[12px] pointer-events-auto rounded-[9999px] size-[46px] bottom-[40px] right-[20px]"
+      data-name="Background"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
       <div className="absolute bottom-0 pointer-events-none right-0 rounded-[9999px] size-[46px]" data-name="Overlay+Shadow">
         <div aria-hidden="true" className="absolute bg-[rgba(255,255,255,0)] inset-0 rounded-[9999px]" />
         <div className="absolute inset-0 rounded-[inherit] shadow-[inset_0px_0px_0px_2px_rgba(34,34,34,0.2)]" />
@@ -2803,7 +2814,7 @@ export default function TrangThanhToan() {
   return (
     <div className="bg-white content-stretch flex flex-col items-start relative size-full" data-name="Trang thanh toán">
       <Container />
-      <div className="absolute bottom-0 h-[2858px] pointer-events-none right-[20px]">
+      <div className="absolute bottom-0 h-[2689px] pointer-events-none right-[20px]">
         <Background6 />
       </div>
     </div>
